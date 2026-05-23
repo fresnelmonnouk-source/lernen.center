@@ -1,26 +1,75 @@
+// Import per-weight subpaths (not the package root) so Metro bundles only the
+// 9 font files we use, instead of every weight/italic in each family.
+import { BricolageGrotesque_400Regular } from '@expo-google-fonts/bricolage-grotesque/400Regular';
+import { BricolageGrotesque_500Medium } from '@expo-google-fonts/bricolage-grotesque/500Medium';
+import { BricolageGrotesque_700Bold } from '@expo-google-fonts/bricolage-grotesque/700Bold';
+import { BricolageGrotesque_800ExtraBold } from '@expo-google-fonts/bricolage-grotesque/800ExtraBold';
+import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display/400Regular';
+import { DMSerifDisplay_400Regular_Italic } from '@expo-google-fonts/dm-serif-display/400Regular_Italic';
+import { JetBrainsMono_400Regular } from '@expo-google-fonts/jetbrains-mono/400Regular';
+import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono/500Medium';
+import { JetBrainsMono_700Bold } from '@expo-google-fonts/jetbrains-mono/700Bold';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
+import { View } from 'react-native';
 
-import { Palette } from '@/theme/bauhaus';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ThemeProvider, useTheme } from '@/theme/theme-context';
+import { Fonts } from '@/theme/tokens';
+
+SplashScreen.preventAutoHideAsync();
 
 /**
- * Root Stack navigator.
- *
- * Navigation model (decision A): a drill-down Stack from a card-based home,
- * mirroring the Bauhaus reference. The hierarchy is born at 2 menus
- * (Apprendre / Tester) — the legacy 4-menu web layout is never reproduced.
+ * Root layout: load the 3 Bauhaus font families (gate the UI behind the splash
+ * until ready), then provide the theme and a themed drill-down Stack. The
+ * hierarchy is born at 2 menus (Apprendre / Tester).
  */
 export default function RootLayout() {
+  const [loaded, error] = useFonts({
+    BricolageGrotesque_400Regular,
+    BricolageGrotesque_500Medium,
+    BricolageGrotesque_700Bold,
+    BricolageGrotesque_800ExtraBold,
+    DMSerifDisplay_400Regular,
+    DMSerifDisplay_400Regular_Italic,
+    JetBrainsMono_400Regular,
+    JetBrainsMono_500Medium,
+    JetBrainsMono_700Bold,
+  });
+
+  useEffect(() => {
+    if (loaded || error) SplashScreen.hideAsync();
+  }, [loaded, error]);
+
+  if (!loaded && !error) return null;
+
+  return (
+    <ThemeProvider>
+      <RootNavigator />
+    </ThemeProvider>
+  );
+}
+
+function RootNavigator() {
+  const { colors, isDark } = useTheme();
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: Palette.cream },
-          headerTintColor: Palette.ink,
-          headerTitleStyle: { fontWeight: '800' },
+          headerStyle: { backgroundColor: colors.cream },
+          headerTintColor: colors.ink,
+          headerTitleStyle: { fontFamily: Fonts.display, color: colors.ink },
           headerShadowVisible: false,
-          contentStyle: { backgroundColor: Palette.cream },
+          contentStyle: { backgroundColor: colors.cream },
+          headerRight: () => (
+            <View style={{ marginRight: 4 }}>
+              <ThemeToggle />
+            </View>
+          ),
         }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
 

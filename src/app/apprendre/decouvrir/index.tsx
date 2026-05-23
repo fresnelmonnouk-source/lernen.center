@@ -1,6 +1,6 @@
 import { MenuList } from '@/components/ui/MenuList';
 import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
-import { Palette } from '@/theme/bauhaus';
+import { Accent } from '@/theme/tokens';
 
 /** Sous-menu DÉCOUVRIR : Vocabulaire (flashcards) + Conjugaison. */
 export default function DecouvrirScreen() {
@@ -12,14 +12,14 @@ export default function DecouvrirScreen() {
             mark: 'V',
             title: 'Vocabulaire',
             subtitle: '1377 MOTS · FLASHCARDS PAR CATÉGORIE + NIVEAU',
-            color: Palette.red,
+            color: Accent.red,
             href: '/apprendre/decouvrir/vocabulaire',
           },
           {
             mark: 'K',
             title: 'Conjugaison',
             subtitle: '98 VERBES · CONSULTER · QUIZ · RÉGULIER ?',
-            color: Palette.blue,
+            color: Accent.blue,
             href: '/apprendre/decouvrir/conjugaison',
           },
         ]}

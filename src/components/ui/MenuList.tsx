@@ -1,22 +1,24 @@
 import { Link } from 'expo-router';
 import { Fragment } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Border, Palette, Radius, ShadowOffset, Spacing } from '@/theme/bauhaus';
+import { Txt } from '@/components/ui/Txt';
+import { useTheme } from '@/theme/theme-context';
+import { Accent, Border, Shadow, Spacing } from '@/theme/tokens';
 
 export type MenuItem = {
-  /** Letter or short glyph shown in the colored square marker. */
+  /** Letter or short glyph for the colored square marker. */
   mark: string;
   title: string;
   subtitle?: string;
-  /** Marker fill color. Defaults to ink. */
+  /** Marker fill (an Accent hue). Defaults to ink. */
   color?: string;
   href?: string;
-  /** Locked items (e.g. V2 features) render greyed and are not pressable. */
+  /** Locked (V2) items render greyed and non-pressable. */
   locked?: boolean;
 };
 
-/** Vertical list of navigable rows with square colored markers (Bauhaus style). */
+/** Vertical list of navigable rows with square colored markers (`.list-item`). */
 export function MenuList({ items }: { items: MenuItem[] }) {
   return (
     <View style={styles.list}>
@@ -38,19 +40,33 @@ export function MenuList({ items }: { items: MenuItem[] }) {
 }
 
 function Row({ item }: { item: MenuItem }) {
-  const markColor = item.color ?? Palette.ink;
+  const { colors } = useTheme();
+  const markColor = item.color ?? colors.ink;
+  // Marker text contrasts with its fill: dark text on yellow, else cream.
+  const markText = markColor === Accent.yellow ? colors.ink : '#F4F0E6';
+
   return (
     <View style={[styles.row, item.locked && styles.rowLocked]}>
-      <View style={styles.shadow} />
-      <View style={styles.rowSurface}>
-        <View style={[styles.mark, { backgroundColor: markColor }]}>
-          <Text style={styles.markText}>{item.mark}</Text>
+      <View style={[styles.shadow, { backgroundColor: colors.ink }]} />
+      <View style={[styles.surface, { backgroundColor: colors.paper, borderColor: colors.ink }]}>
+        <View style={[styles.mark, { backgroundColor: markColor, borderColor: colors.ink }]}>
+          <Txt font="display" size={18} color={markText}>
+            {item.mark}
+          </Txt>
         </View>
-        <View style={styles.rowBody}>
-          <Text style={styles.rowTitle}>{item.title}</Text>
-          {item.subtitle ? <Text style={styles.rowSubtitle}>{item.subtitle}</Text> : null}
+        <View style={styles.body}>
+          <Txt font="bold" size={17} uppercase tracking={-0.2}>
+            {item.title}
+          </Txt>
+          {item.subtitle ? (
+            <Txt font="mono" size={10} tone="ink2" tracking={0.5} style={styles.subtitle}>
+              {item.subtitle}
+            </Txt>
+          ) : null}
         </View>
-        <Text style={styles.rowArrow}>{item.locked ? '🔒' : '→'}</Text>
+        <Txt font="display" size={22}>
+          {item.locked ? '🔒' : '→'}
+        </Txt>
       </View>
     </View>
   );
@@ -58,13 +74,13 @@ function Row({ item }: { item: MenuItem }) {
 
 const styles = StyleSheet.create({
   list: {
-    gap: Spacing.three,
+    gap: Spacing.two,
   },
   row: {
     position: 'relative',
   },
   rowLocked: {
-    opacity: 0.4,
+    opacity: 0.45,
   },
   shadow: {
     position: 'absolute',
@@ -72,53 +88,28 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: Palette.ink,
-    borderRadius: Radius.sm,
-    transform: [{ translateX: ShadowOffset.sm }, { translateY: ShadowOffset.sm }],
+    transform: [{ translateX: Shadow.sm }, { translateY: Shadow.sm }],
   },
-  rowSurface: {
+  surface: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.three,
-    backgroundColor: Palette.paper,
-    borderColor: Palette.ink,
     borderWidth: Border.base,
-    borderRadius: Radius.sm,
-    padding: Spacing.three,
+    paddingVertical: Spacing.three,
+    paddingHorizontal: Spacing.three,
   },
   mark: {
     width: 48,
     height: 48,
-    borderRadius: Radius.sm,
-    borderColor: Palette.ink,
-    borderWidth: Border.thin,
+    borderWidth: Border.base,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  markText: {
-    color: Palette.cream,
-    fontSize: 20,
-    fontWeight: '800',
-  },
-  rowBody: {
+  body: {
     flex: 1,
   },
-  rowTitle: {
-    color: Palette.ink,
-    fontSize: 15,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
-  },
-  rowSubtitle: {
-    color: Palette.ink2,
-    fontSize: 10,
-    fontFamily: 'monospace',
+  subtitle: {
     marginTop: 2,
-  },
-  rowArrow: {
-    color: Palette.ink,
-    fontSize: 22,
-    fontWeight: '800',
+    opacity: 0.7,
   },
 });

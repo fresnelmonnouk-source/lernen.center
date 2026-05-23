@@ -1,55 +1,55 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Border, Palette, Radius, ShadowOffset, Spacing } from '@/theme/bauhaus';
+import { Txt } from '@/components/ui/Txt';
+import { useTheme } from '@/theme/theme-context';
+import { Border, Fonts, Shadow, Spacing } from '@/theme/tokens';
 
 type Props = {
-  /** Two-digit index shown big on the left, e.g. "01". */
+  /** Oversized index, e.g. "01". */
   number: string;
   title: string;
-  /** Solid fill color of the card (yellow/red/blue/green). */
+  /** Solid fill color of the card (an Accent hue). */
   color: string;
   href: string;
-  /** Title/number color. Defaults to ink. */
+  /** Number/title color. Defaults to ink. */
   foreground?: string;
 };
 
 /**
- * Primary menu "action card" from the Bauhaus reference: solid color fill,
- * oversized number, uppercase title, corner arrow, and a brutalist press
- * effect (the surface sinks into its hard shadow when pressed).
+ * Primary menu action card (reference: `.action-card`): solid fill, 56px number,
+ * uppercase title, corner arrow, and a brutalist press effect (the surface sinks
+ * into its hard shadow). Sharp corners.
  */
-export function ActionCard({ number, title, color, href, foreground = Palette.ink }: Props) {
+export function ActionCard({ number, title, color, href, foreground }: Props) {
+  const { colors } = useTheme();
   const [pressed, setPressed] = useState(false);
-  const offset = ShadowOffset.lg;
+  const offset = Shadow.lg;
+  const fg = foreground ?? colors.ink;
 
   return (
     <Link href={href} asChild>
-      <Pressable onPressIn={() => setPressed(true)} onPressOut={() => setPressed(false)}>
-        <View>
-          {/* Hard shadow layer. */}
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              {
-                backgroundColor: Palette.ink,
-                borderRadius: Radius.sm,
-                transform: [{ translateX: offset }, { translateY: offset }],
-              },
-            ]}
-          />
-          {/* Card surface — sinks toward the shadow when pressed. */}
-          <View
-            style={[
-              styles.card,
-              { backgroundColor: color },
-              pressed && { transform: [{ translateX: offset - 1 }, { translateY: offset - 1 }] },
-            ]}>
-            <Text style={[styles.arrow, { color: foreground }]}>↗</Text>
-            <Text style={[styles.number, { color: foreground }]}>{number}</Text>
-            <Text style={[styles.title, { color: foreground }]}>{title}</Text>
-          </View>
+      <Pressable
+        style={styles.root}
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}>
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.ink, transform: [{ translateX: offset }, { translateY: offset }] }]} />
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: color, borderColor: colors.ink },
+            pressed && { transform: [{ translateX: offset - 1 }, { translateY: offset - 1 }] },
+          ]}>
+          <Txt font="display" size={20} color={fg} style={styles.arrow}>
+            ↗
+          </Txt>
+          <Txt font="display" size={56} color={fg} tracking={-2} lineHeight={52}>
+            {number}
+          </Txt>
+          <Txt font="bold" size={18} color={fg} uppercase style={styles.title}>
+            {title}
+          </Txt>
         </View>
       </Pressable>
     </Link>
@@ -57,31 +57,23 @@ export function ActionCard({ number, title, color, href, foreground = Palette.in
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   card: {
-    borderColor: Palette.ink,
     borderWidth: Border.base,
-    borderRadius: Radius.sm,
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.four,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.three,
     minHeight: 150,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   arrow: {
     position: 'absolute',
     top: Spacing.three,
     right: Spacing.three,
-    fontSize: 22,
-    fontWeight: '800',
-  },
-  number: {
-    fontSize: 56,
-    fontWeight: '800',
-    lineHeight: 58,
+    fontFamily: Fonts.display,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    marginTop: Spacing.three,
   },
 });
