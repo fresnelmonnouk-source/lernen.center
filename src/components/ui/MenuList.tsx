@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, type Href } from 'expo-router';
 import { Fragment } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -13,7 +13,7 @@ export type MenuItem = {
   subtitle?: string;
   /** Marker fill (an Accent hue). Defaults to ink. */
   color?: string;
-  href?: string;
+  href?: Href;
   /** Locked (V2) items render greyed and non-pressable. */
   locked?: boolean;
 };

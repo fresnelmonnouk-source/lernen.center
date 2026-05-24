@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, type Href } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -12,7 +12,7 @@ type Props = {
   title: string;
   /** Solid fill color of the card (an Accent hue). */
   color: string;
-  href: string;
+  href: Href;
   /** Number/title color. Defaults to ink. */
   foreground?: string;
 };
