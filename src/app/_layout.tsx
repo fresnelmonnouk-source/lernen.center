@@ -10,12 +10,13 @@ import { JetBrainsMono_400Regular } from '@expo-google-fonts/jetbrains-mono/400R
 import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono/500Medium';
 import { JetBrainsMono_700Bold } from '@expo-google-fonts/jetbrains-mono/700Bold';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 
+import { AuthProvider, useAuth } from '@/auth/auth-context';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ThemeProvider, useTheme } from '@/theme/theme-context';
 import { Fonts } from '@/theme/tokens';
@@ -48,13 +49,38 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <RootNavigator />
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
 
 function RootNavigator() {
   const { colors, isDark } = useTheme();
+  const { session, profile, loading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  // Session gate: route between (auth) → onboarding → app.
+  useEffect(() => {
+    if (loading) return;
+    const inAuth = segments[0] === '(auth)';
+    const inOnboarding = segments[0] === 'onboarding';
+    const onboarded = profile?.onboarding_completed === true;
+    if (!session && !inAuth) {
+      router.replace('/login');
+    } else if (session && !onboarded && !inOnboarding) {
+      router.replace('/onboarding');
+    } else if (session && onboarded && (inAuth || inOnboarding)) {
+      router.replace('/');
+    }
+  }, [loading, session, profile, segments, router]);
+
+  if (loading) {
+    return <View style={{ flex: 1, backgroundColor: colors.cream }} />;
+  }
+
   return (
     <>
       <StatusBar style={isDark ? 'light' : 'dark'} />
@@ -72,6 +98,8 @@ function RootNavigator() {
           ),
         }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
 
         {/* APPRENDRE */}
         <Stack.Screen name="apprendre/index" options={{ title: 'APPRENDRE' }} />

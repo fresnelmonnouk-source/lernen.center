@@ -1,6 +1,7 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useAuth } from '@/auth/auth-context';
 import { ActionCard } from '@/components/ui/ActionCard';
 import { BadgesGrid, type BadgeData } from '@/components/ui/Badges';
 import { BrandMark } from '@/components/ui/BrandMark';
@@ -10,6 +11,7 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { StatGrid } from '@/components/ui/Stat';
 import { StreakTag } from '@/components/ui/StreakTag';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Accent, MaxContentWidth, Spacing } from '@/theme/tokens';
 
@@ -31,6 +33,9 @@ const BADGES: BadgeData[] = [
 
 export default function HomeScreen() {
   const { colors } = useTheme();
+  const { profile, signOut } = useAuth();
+  const level = profile?.current_level ?? 'A1';
+  const streak = profile?.streak_days ?? 0;
   return (
     <View style={[styles.root, { backgroundColor: colors.cream }]}>
       <GridBackground />
@@ -40,13 +45,13 @@ export default function HomeScreen() {
             <View style={styles.header}>
               <BrandMark />
               <View style={styles.headerRight}>
-                <StreakTag days={0} />
+                <StreakTag days={streak} />
                 <ThemeToggle />
               </View>
             </View>
 
             <HeroCard
-              eyebrow="PROGRESSION · NIVEAU A1"
+              eyebrow={`PROGRESSION · NIVEAU ${level}`}
               value={0}
               total={30}
               label="Commence ton premier"
@@ -55,7 +60,7 @@ export default function HomeScreen() {
 
             <StatGrid
               stats={[
-                { value: 0, label: 'jours série', accent: 'red' },
+                { value: streak, label: 'jours série', accent: 'red' },
                 { value: 0, label: 'mots vus', accent: 'yellow' },
                 { value: 0, label: 'quiz faits', accent: 'blue' },
               ]}
@@ -68,6 +73,12 @@ export default function HomeScreen() {
             </View>
 
             <BadgesGrid badges={BADGES} />
+
+            <Pressable onPress={signOut} style={styles.logout} accessibilityRole="button">
+              <Txt font="monoBold" size={11} tone="ink2" uppercase tracking={1}>
+                Se déconnecter
+              </Txt>
+            </Pressable>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -105,5 +116,9 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     gap: Spacing.two,
+  },
+  logout: {
+    alignItems: 'center',
+    paddingVertical: Spacing.three,
   },
 });
