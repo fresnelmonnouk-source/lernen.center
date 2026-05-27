@@ -18,7 +18,7 @@ export default function DecouvrirScreen() {
           {
             mark: 'K',
             title: 'Conjugaison',
-            subtitle: '98 VERBES · CONSULTER · QUIZ · RÉGULIER ?',
+            subtitle: 'CONJUGUER (IA) · RÉGULIER OU IRRÉGULIER ?',
             color: Accent.blue,
             href: '/apprendre/decouvrir/conjugaison',
           },

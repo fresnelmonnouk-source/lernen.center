@@ -23,7 +23,7 @@ export function ScreenScaffold({ eyebrow, title, accent, children }: Props) {
     <View style={[styles.root, { backgroundColor: colors.cream }]}>
       <GridBackground />
       <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.column}>
             <View style={styles.header}>
               {eyebrow ? (
