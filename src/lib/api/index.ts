@@ -8,7 +8,7 @@
  *   import { api } from '@/lib/api';
  *   const res = await api.conjugate({ verb: 'gehen', tense: 'Perfekt' });
  */
-import { apiPost } from './client';
+import { apiGet, apiPost } from './client';
 import type {
   CertLesenRequest,
   CertLesenResponse,
@@ -20,10 +20,16 @@ import type {
   ConjugateResponse,
   CorrectSentenceRequest,
   CorrectSentenceResponse,
+  CourseSuggestionsRequest,
+  CourseSuggestionsResponse,
+  GenerateCourseRequest,
+  GenerateCourseResponse,
   GenerateExerciseRequest,
   GenerateExerciseResponse,
   GenerateTestRequest,
   GenerateTestResponse,
+  GradeCourseExamRequest,
+  GradeCourseExamResponse,
   GradeSchreibenRequest,
   GradeSchreibenResponse,
   GradeTestRequest,
@@ -40,6 +46,12 @@ export const api = {
   // Test IA
   generateTest: (body: GenerateTestRequest) => apiPost<GenerateTestResponse>('/api/generate-test', body),
   gradeTest: (body: GradeTestRequest) => apiPost<GradeTestResponse>('/api/grade-test', body),
+
+  // Cours (génération IA)
+  courseSuggestions: (q: CourseSuggestionsRequest) =>
+    apiGet<CourseSuggestionsResponse>(`/api/course-suggestions?level=${q.level}&category=${q.category}`, { auth: false }),
+  generateCourse: (body: GenerateCourseRequest) => apiPost<GenerateCourseResponse>('/api/generate-course', body),
+  gradeCourseExam: (body: GradeCourseExamRequest) => apiPost<GradeCourseExamResponse>('/api/grade-course-exam', body),
 
   // Certification Goethe
   certLesen: (body: CertLesenRequest) => apiPost<CertLesenResponse>('/api/cert-lesen', body),

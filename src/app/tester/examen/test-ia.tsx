@@ -91,7 +91,7 @@ export default function TestIaScreen() {
   if (phase === 'playing' && test) {
     return (
       <ScreenScaffold eyebrow="EXAMEN" title="Test IA">
-        <TestRunner test={test} submitting={loading} onSubmit={submit} />
+        <TestRunner questions={test.questions} submitting={loading} onSubmit={submit} />
         {errorBox}
       </ScreenScaffold>
     );

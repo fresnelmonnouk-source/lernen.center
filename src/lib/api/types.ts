@@ -132,6 +132,74 @@ export type GradeTestResponse = {
   recommendations: string[];
 };
 
+// ── Cours (génération IA) ────────────────────────────────────────────────────
+
+export type CourseCategory = 'vocabulary' | 'grammar' | 'conjugation' | 'spelling' | 'expression' | 'culture';
+export type CourseFormat = 'short' | 'standard' | 'long';
+
+export type CourseSuggestionsRequest = { level: Level; category: CourseCategory };
+export type CourseSuggestionsResponse = {
+  success: true;
+  level: Level;
+  category: CourseCategory;
+  suggestions: string[];
+};
+
+export type CourseExample = { german: string; french: string; commentary: string };
+export type CourseSection = {
+  section_number: number;
+  title: string;
+  explanation: string;
+  examples: CourseExample[];
+  common_mistakes: string[];
+};
+export type CourseIntro = { objective: string; prerequisites: string; why_important: string };
+/** Le mini-examen réutilise le format de questions du Test IA (mcq | open). */
+export type CourseMiniExam = { instructions: string; questions: TestQuestion[] };
+export type Course = {
+  title: string;
+  topic: string;
+  category: CourseCategory;
+  level: Level;
+  format: CourseFormat;
+  estimated_duration_minutes: number;
+  introduction: CourseIntro;
+  sections: CourseSection[];
+  key_points: string[];
+  mini_exam: CourseMiniExam;
+  next_topics_suggestions: string[];
+};
+
+export type GenerateCourseRequest = { topic: string; category: CourseCategory; level: Level; format: CourseFormat };
+export type GenerateCourseResponse = {
+  success: true;
+  course: Course;
+  /** null si la sauvegarde Supabase a échoué — l'examen est alors indisponible. */
+  course_id: string | null;
+  meta?: unknown;
+};
+
+export type GradeCourseExamRequest = { course_id: string; answers: TestAnswer[] };
+export type CourseExamResult = {
+  question_id: number;
+  type: 'mcq' | 'open';
+  question: string;
+  user_answer: string;
+  correct_answer: string;
+  is_correct: boolean;
+  points: number;
+  verdict?: 'correct' | 'partial' | 'incorrect';
+  feedback?: string;
+};
+export type CourseExamSummary = { verdict: string; feedback: string; next_action: string };
+export type GradeCourseExamResponse = {
+  success: true;
+  score: { correct: number; total: number; percentage: number; mention: string; emoji: string; color: string };
+  results: CourseExamResult[];
+  summary: CourseExamSummary;
+  meta?: unknown;
+};
+
 // ── Certification Goethe ─────────────────────────────────────────────────────
 
 export type CertLesenRequest = { level: Level; part: number };

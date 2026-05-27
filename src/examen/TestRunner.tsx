@@ -7,9 +7,9 @@ import { Input } from '@/components/ui/Input';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Accent, Border, Spacing } from '@/theme/tokens';
-import type { TestAnswer, TestData, TestQuestion } from '@/lib/api';
+import type { TestAnswer, TestQuestion } from '@/lib/api';
 
-type Props = { test: TestData; submitting: boolean; onSubmit: (answers: TestAnswer[]) => void };
+type Props = { questions: TestQuestion[]; submitting: boolean; onSubmit: (answers: TestAnswer[]) => void };
 
 type AnswerMap = Record<number, number | string>;
 
@@ -21,29 +21,29 @@ function isAnswered(q: TestQuestion, answers: AnswerMap): boolean {
 
 /** Déroule un examen IA : QCM (sélection) ou question ouverte (saisie). Aucune
  *  correction locale — les réponses sont collectées puis envoyées à grade-test. */
-export function TestRunner({ test, submitting, onSubmit }: Props) {
+export function TestRunner({ questions, submitting, onSubmit }: Props) {
   const { colors } = useTheme();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<AnswerMap>({});
 
-  const q = test.questions[index];
-  const isLast = index === test.questions.length - 1;
-  const answeredCount = test.questions.filter((qq) => isAnswered(qq, answers)).length;
-  const allAnswered = answeredCount === test.questions.length;
+  const q = questions[index];
+  const isLast = index === questions.length - 1;
+  const answeredCount = questions.filter((qq) => isAnswered(qq, answers)).length;
+  const allAnswered = answeredCount === questions.length;
 
   const setAnswer = (value: number | string) => setAnswers((prev) => ({ ...prev, [q.id]: value }));
 
   const submit = () =>
-    onSubmit(test.questions.map((qq) => ({ questionId: qq.id, answer: answers[qq.id] })));
+    onSubmit(questions.map((qq) => ({ questionId: qq.id, answer: answers[qq.id] })));
 
   return (
     <View style={styles.wrap}>
       <View style={styles.head}>
         <Txt font="monoBold" size={11} tone="ink2" uppercase tracking={1.2}>
-          Question {index + 1} / {test.questions.length}
+          Question {index + 1} / {questions.length}
         </Txt>
         <Txt font="monoBold" size={11} color={Accent.purple} uppercase tracking={1.2}>
-          {answeredCount}/{test.questions.length} répondu
+          {answeredCount}/{questions.length} répondu
         </Txt>
       </View>
 
