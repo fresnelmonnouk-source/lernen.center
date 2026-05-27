@@ -11,7 +11,7 @@ export default function TesterScreen() {
           {
             mark: '🎲',
             title: 'Quiz',
-            subtitle: 'RAPIDE · SUPER QUIZ · QUOTIDIEN',
+            subtitle: 'QCM RAPIDE · SUPER QUIZ ÉCRITURE',
             color: Accent.yellow,
             href: '/tester/quiz',
           },
