@@ -204,10 +204,12 @@ export type GradeCourseExamResponse = {
 
 export type CertLesenRequest = { level: Level; part: number };
 export type LesenText = { id: string; title: string; content: string };
+/** Goethe Lesen question types — same shape (options + correct_index), 4 enums. */
+export type LesenQuestionType = 'mcq' | 'true_false' | 'three_way' | 'matching';
 export type LesenQuestion = {
   id: number;
   question_text: string;
-  type: 'mcq';
+  type: LesenQuestionType;
   options: string[];
   correct_index: number;
   explanation?: string;
