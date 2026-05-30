@@ -18,8 +18,10 @@ import { View } from 'react-native';
 
 import { AuthProvider, useAuth } from '@/auth/auth-context';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { env } from '@/lib/env';
 import { ThemeProvider, useTheme } from '@/theme/theme-context';
-import { Fonts } from '@/theme/tokens';
+import { Accent, Fonts } from '@/theme/tokens';
+import { Txt } from '@/components/ui/Txt';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -63,7 +65,16 @@ function RootNavigator() {
   const router = useRouter();
 
   // Session gate: route between (auth) → onboarding → app.
+  // DEV bypass : when EXPO_PUBLIC_DEV_BYPASS_AUTH=true, skip the gate entirely
+  // so screens can be inspected without a Supabase session. Any code path that
+  // calls Supabase or the backend will still fail (no token) — by design.
   useEffect(() => {
+    if (env.devBypassAuth) {
+      const inAuth = segments[0] === '(auth)';
+      const inOnboarding = segments[0] === 'onboarding';
+      if (inAuth || inOnboarding) router.replace('/');
+      return;
+    }
     if (loading) return;
     const inAuth = segments[0] === '(auth)';
     const inOnboarding = segments[0] === 'onboarding';
@@ -77,13 +88,25 @@ function RootNavigator() {
     }
   }, [loading, session, profile, segments, router]);
 
-  if (loading) {
+  if (loading && !env.devBypassAuth) {
     return <View style={{ flex: 1, backgroundColor: colors.cream }} />;
   }
 
   return (
     <>
       <StatusBar style={isDark ? 'light' : 'dark'} />
+      {env.devBypassAuth ? (
+        <View
+          style={{
+            backgroundColor: Accent.yellow,
+            paddingVertical: 4,
+            alignItems: 'center',
+          }}>
+          <Txt font="monoBold" size={10} color="#0A0A0A" uppercase tracking={1.5}>
+            DEV · auth bypassée
+          </Txt>
+        </View>
+      ) : null}
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: colors.cream },

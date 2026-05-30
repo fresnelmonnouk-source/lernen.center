@@ -24,4 +24,6 @@ export const env = {
   apiBaseUrl: required(process.env.EXPO_PUBLIC_API_BASE_URL, 'EXPO_PUBLIC_API_BASE_URL').replace(/\/+$/, ''),
   supabaseUrl: required(process.env.EXPO_PUBLIC_SUPABASE_URL, 'EXPO_PUBLIC_SUPABASE_URL'),
   supabaseAnonKey: required(process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY, 'EXPO_PUBLIC_SUPABASE_ANON_KEY'),
+  /** Dev flag: bypass the (auth) → onboarding gate. See .env.example. */
+  devBypassAuth: process.env.EXPO_PUBLIC_DEV_BYPASS_AUTH === 'true',
 } as const;
