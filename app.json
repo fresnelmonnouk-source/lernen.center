@@ -44,6 +44,19 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d988ea82-bc16-484c-811f-d28ab3516b53"
+      }
+    },
+    "owner": "myautomakion",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d988ea82-bc16-484c-811f-d28ab3516b53"
     }
   }
 }
