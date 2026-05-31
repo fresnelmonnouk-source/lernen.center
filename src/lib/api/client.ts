@@ -1,3 +1,4 @@
+import { COPY } from '../copy';
 import { env } from '../env';
 import { supabase } from '../supabase';
 import { ApiError } from './errors';
@@ -29,7 +30,7 @@ async function request<TResponse>(
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
     if (!token) {
-      throw new ApiError(401, 'Tu dois être connecté pour faire ça.');
+      throw new ApiError(401, COPY.errSession);
     }
     headers.Authorization = `Bearer ${token}`;
   }
@@ -44,7 +45,7 @@ async function request<TResponse>(
     });
   } catch {
     // fetch only rejects on transport failure (offline, DNS, aborted).
-    throw new ApiError(0, 'Connexion au serveur impossible. Vérifie ta connexion internet.');
+    throw new ApiError(0, COPY.errNetwork);
   }
 
   const text = await response.text();

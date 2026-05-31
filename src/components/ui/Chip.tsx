@@ -30,7 +30,9 @@ export function Chip({ label, sublabel, selected, onPress, color, fullWidth, sty
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ selected }}
+      accessibilityLabel={`${label}${selected ? ', sélectionné' : ''}`}
       onPress={onPress}
+      hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
       style={[fullWidth && styles.full, style]}>
       {selected ? (
         <View

@@ -3,7 +3,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/auth-context';
 import { ActionCard } from '@/components/ui/ActionCard';
-import { BadgesGrid, type BadgeData } from '@/components/ui/Badges';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { GridBackground } from '@/components/ui/GridBackground';
 import { HeroCard } from '@/components/ui/HeroCard';
@@ -15,37 +14,23 @@ import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Accent, MaxContentWidth, Spacing } from '@/theme/tokens';
 
-// Placeholder data — wired to Supabase/profile in Phase 2.
-const BADGES: BadgeData[] = [
-  { icon: '🌱', earned: true },
-  { icon: '🔥', earned: true },
-  { icon: '📚' },
-  { icon: '🎯' },
-  { icon: '⭐' },
-  { icon: '🏆' },
-  { icon: '💎' },
-  { icon: '🚀' },
-  { icon: '🧠' },
-  { icon: '🇩🇪' },
-  { icon: '✍️' },
-  { icon: '🎓' },
-];
-
 export default function HomeScreen() {
   const { colors } = useTheme();
   const { profile, signOut } = useAuth();
   const level = profile?.current_level ?? 'A1';
   const streak = profile?.streak_days ?? 0;
+  const isReturning = streak > 0;
+
   return (
     <View style={[styles.root, { backgroundColor: colors.cream }]}>
       <GridBackground />
       <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.column}>
             <View style={styles.header}>
               <BrandMark />
               <View style={styles.headerRight}>
-                <StreakTag days={streak} />
+                {isReturning ? <StreakTag days={streak} /> : null}
                 <ThemeToggle />
               </View>
             </View>
@@ -54,8 +39,8 @@ export default function HomeScreen() {
               eyebrow={`PROGRESSION · NIVEAU ${level}`}
               value={0}
               total={30}
-              label="Commence ton premier"
-              labelAccent="cours."
+              label={isReturning ? 'Continue ta' : 'Premier cours, premier'}
+              labelAccent={isReturning ? 'progression.' : 'objectif.'}
             />
 
             <StatGrid
@@ -72,9 +57,7 @@ export default function HomeScreen() {
               <ActionCard number="02" title="Tester" color={Accent.red} foreground={colors.paper} href="/tester" />
             </View>
 
-            <BadgesGrid badges={BADGES} />
-
-            <Pressable onPress={signOut} style={styles.logout} accessibilityRole="button">
+            <Pressable onPress={signOut} style={styles.logout} accessibilityRole="button" accessibilityLabel="Se déconnecter">
               <Txt font="monoBold" size={11} tone="ink2" uppercase tracking={1}>
                 Se déconnecter
               </Txt>

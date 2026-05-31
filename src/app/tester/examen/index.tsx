@@ -2,7 +2,7 @@ import { MenuList } from '@/components/ui/MenuList';
 import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
 import { Accent } from '@/theme/tokens';
 
-/** Sous-menu EXAMEN : Test IA + Préparation Certification Goethe. */
+/** Sous-menu EXAMEN : Test IA + Préparation Certification. */
 export default function ExamenScreen() {
   return (
     <ScreenScaffold eyebrow="TESTER" title="Examen">
@@ -16,9 +16,9 @@ export default function ExamenScreen() {
             href: '/tester/examen/test-ia',
           },
           {
-            mark: 'G',
+            mark: 'C',
             title: 'Certification',
-            subtitle: 'FORMAT GOETHE · LESEN · SCHREIBEN',
+            subtitle: 'LESEN · SCHREIBEN · A1 À B2',
             color: Accent.green,
             href: '/tester/examen/certification',
           },

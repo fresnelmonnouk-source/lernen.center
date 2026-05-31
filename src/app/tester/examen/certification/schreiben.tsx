@@ -5,7 +5,7 @@ import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
 import { Chip } from '@/components/ui/Chip';
 import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
 import { Txt } from '@/components/ui/Txt';
-import { GOETHE_DISCLAIMER, LEVELS, SCHREIBEN_TASKS } from '@/certification/specs';
+import { CERT_DISCLAIMER, LEVELS, SCHREIBEN_TASKS } from '@/certification/specs';
 import { SchreibenComposer } from '@/certification/SchreibenComposer';
 import { SchreibenResults } from '@/certification/SchreibenResults';
 import {
@@ -111,8 +111,8 @@ export default function SchreibenScreen() {
   return (
     <ScreenScaffold eyebrow="CERTIFICATION" title="Schreiben">
       <Txt font="serifItalic" size={14} tone="ink2" lineHeight={20}>
-        Expression écrite au format Goethe-Zertifikat. Sujet généré par IA, correction selon les 4 critères
-        officiels (Erfüllung, Kohärenz, Wortschatz, Strukturen).
+        Expression écrite niveau A1 à B2. Sujet généré par IA, correction selon 4 critères
+        (Erfüllung, Kohärenz, Wortschatz, Strukturen).
       </Txt>
 
       <View style={styles.group}>
@@ -145,7 +145,7 @@ export default function SchreibenScreen() {
       <ButtonPrimary label="Générer le sujet" onPress={generate} loading={loading} color={Accent.green} />
 
       <Txt font="serifItalic" size={11} tone="ink2" lineHeight={16}>
-        {GOETHE_DISCLAIMER}
+        {CERT_DISCLAIMER}
       </Txt>
     </ScreenScaffold>
   );

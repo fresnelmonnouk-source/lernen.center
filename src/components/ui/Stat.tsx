@@ -16,7 +16,10 @@ const ACCENT_BG = { red: Accent.red, yellow: Accent.yellow, blue: Accent.blue };
 function Stat({ value, label, accent }: StatData) {
   const { colors } = useTheme();
   const bg = accent ? ACCENT_BG[accent] : colors.paper;
-  const fg = accent === 'yellow' || !accent ? colors.ink : '#FFFFFF';
+  // Hardcodes volontaires : les accents sont des couleurs fixes indépendantes du thème.
+  // Sur yellow → toujours noir absolu (contraste). Sur red/blue → toujours blanc.
+  // Sur paper → suit le thème (ink dynamique).
+  const fg = !accent ? colors.ink : accent === 'yellow' ? '#0A0A0A' : '#FFFFFF';
 
   return (
     <View style={styles.wrap}>

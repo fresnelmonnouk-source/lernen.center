@@ -32,14 +32,17 @@ export const darkColors: ThemeColors = {
   cream2: '#181818',
   cream3: '#242424',
   ink: '#F4F0E6',
-  ink2: '#DDD3B8',
+  // ink2 dark : cream légèrement assourdi (avant #DDD3B8 = quasi blanc, trop criard sur eyebrows)
+  ink2: '#C9BFA6',
   paper: '#181818',
 };
 
-/** Accent hues — fixed in both themes (used for cards, markers, articles). */
+/** Accent hues — fixed in both themes (used for cards, markers, articles).
+ *  redDeep : variante pour textes <14pt sur fond rouge (passe AA 6.1:1 vs red 3.4:1). */
 export const Accent = {
   red: '#E63946',
   redDark: '#C42937',
+  redDeep: '#B91C1C',
   yellow: '#FFD60A',
   yellowDark: '#E8B800',
   blue: '#1E40AF',

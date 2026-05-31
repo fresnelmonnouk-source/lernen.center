@@ -6,16 +6,18 @@ import { BrandMark } from '@/components/ui/BrandMark';
 import { GridBackground } from '@/components/ui/GridBackground';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
-import { MaxContentWidth, Spacing } from '@/theme/tokens';
+import { Accent, MaxContentWidth, Spacing } from '@/theme/tokens';
 
 type Props = {
   eyebrow: string;
   title: string;
+  /** Serif-italic accent appended to the title (e.g. "?"). */
+  accent?: string;
   children: ReactNode;
 };
 
 /** Centered, branded form chrome shared by login / signup / onboarding. */
-export function AuthScaffold({ eyebrow, title, children }: Props) {
+export function AuthScaffold({ eyebrow, title, accent, children }: Props) {
   const { colors } = useTheme();
   return (
     <View style={[styles.root, { backgroundColor: colors.cream }]}>
@@ -31,6 +33,12 @@ export function AuthScaffold({ eyebrow, title, children }: Props) {
                 </Txt>
                 <Txt font="display" size={36} uppercase tracking={-1} lineHeight={38}>
                   {title}
+                  {accent ? (
+                    <Txt font="serifItalic" size={32} color={Accent.red} style={styles.accent}>
+                      {' '}
+                      {accent}
+                    </Txt>
+                  ) : null}
                 </Txt>
               </View>
               {children}
@@ -48,4 +56,5 @@ const styles = StyleSheet.create({
   content: { padding: Spacing.four, gap: Spacing.four, flexGrow: 1, justifyContent: 'center' },
   col: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', gap: Spacing.four },
   head: { gap: Spacing.one },
+  accent: { textTransform: 'none' },
 });

@@ -23,6 +23,7 @@ export function IconButton({ onPress, children, accessibilityLabel }: Props) {
       onPress={onPress}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
+      hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
       style={styles.root}>
       <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.ink, transform: [{ translateX: offset }, { translateY: offset }] }]} />
       <View

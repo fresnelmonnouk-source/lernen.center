@@ -209,7 +209,7 @@ export default function CoursScreen() {
 
       {suggestions.length > 0 ? (
         <View style={styles.group}>
-          <Txt font="monoBold" size={10} tone="ink2" uppercase tracking={1.5}>Idées</Txt>
+          <Txt font="monoBold" size={10} tone="ink2" uppercase tracking={1.5}>Suggestions</Txt>
           {suggestions.slice(0, 6).map((s) => (
             <Chip key={s} label={s} selected={topic === s} onPress={() => setTopic(s)} color={Accent.blue} fullWidth />
           ))}
@@ -217,18 +217,22 @@ export default function CoursScreen() {
       ) : null}
 
       <Txt font="body" size={12} tone="ink2">
-        Sans sujet, l’IA en choisira un parmi les suggestions ci-dessus. Tu peux aussi cliquer « Surprends-moi ».
+        Laisse vide : l’IA pioche dans les suggestions. Ou tape ton propre sujet.
       </Txt>
 
       {errorBox}
       <View style={styles.actionsRow}>
         <View style={styles.actionFlex}>
-          <ButtonPrimary label="Surprends-moi" onPress={surpriseMe} color={Accent.yellow} textColor="#0A0A0A" />
+          <ButtonPrimary label="Choisir au hasard" onPress={surpriseMe} color={Accent.yellow} textColor="#0A0A0A" />
         </View>
         <View style={styles.actionFlex}>
-          <ButtonPrimary label="Générer le cours" onPress={generate} loading={loading} color={Accent.purple} />
+          <ButtonPrimary label="Générer mon cours" onPress={generate} loading={loading} color={Accent.purple} />
         </View>
       </View>
+
+      <Txt font="serifItalic" size={11} tone="ink2" lineHeight={16}>
+        Généré par IA. Vérifie les points critiques avant un examen réel.
+      </Txt>
     </ScreenScaffold>
   );
 }

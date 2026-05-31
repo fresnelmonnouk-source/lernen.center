@@ -90,8 +90,7 @@ export function AiDrill() {
     return (
       <View style={styles.wrap}>
         <Txt font="serifItalic" size={14} tone="ink2" lineHeight={20}>
-          Tape n’importe quel verbe + un temps. L’IA génère les 6 réponses attendues, tu remplis le tableau,
-          on corrige en local.
+          Choisis un verbe et un temps. L’IA te donne les 6 conjugaisons à trouver. Tu tapes, on corrige.
         </Txt>
 
         {stats.attempted > 0 ? (
@@ -130,6 +129,9 @@ export function AiDrill() {
 
         {errorBox}
         <ButtonPrimary label="Démarrer le drill" onPress={start} loading={phase === 'loading'} color={Accent.purple} />
+        <Txt font="serifItalic" size={11} tone="ink2" lineHeight={16}>
+          Généré par IA. Vérifie les points critiques avant un examen réel.
+        </Txt>
       </View>
     );
   }
@@ -210,7 +212,7 @@ export function AiDrill() {
               {correctByRow.filter(Boolean).length}/6
             </Txt>
             <Txt font="monoBold" size={11} color={perfect ? '#FFFFFF' : '#0A0A0A'} uppercase tracking={1.2}>
-              {perfect ? 'Parfait — Stark !' : 'Réponses attendues affichées en rouge'}
+              {perfect ? 'Parfait. 6/6.' : 'Réponses attendues affichées en rouge'}
             </Txt>
           </HardShadowBox>
 

@@ -12,7 +12,7 @@ export function GridBackground() {
   const { colors, isDark } = useTheme();
   // Lighten slightly more in dark mode so the grid stays perceptible.
   const lineColor = colors.ink;
-  const opacity = isDark ? 0.06 : 0.025;
+  const opacity = isDark ? 0.10 : 0.025;
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">

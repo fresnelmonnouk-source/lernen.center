@@ -36,7 +36,7 @@ export default function OnboardingScreen() {
       onboarding_completed: true,
     });
     if (e) {
-      setError("Impossible d'enregistrer. Réessaie.");
+      setError('Enregistrement impossible. Réessaie.');
       setLoading(false);
       return;
     }
@@ -44,12 +44,12 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <AuthScaffold eyebrow="Bienvenue" title="On fait connaissance">
+    <AuthScaffold eyebrow="ÉTAPE 1/1" title="Qui es-tu" accent="?">
       <Input
         label="Ton prénom"
         value={name}
         onChangeText={setName}
-        placeholder="Comment on t'appelle ?"
+        placeholder="Prénom ou pseudo"
         autoCapitalize="words"
       />
       <View style={styles.levelsBlock}>
@@ -67,7 +67,7 @@ export default function OnboardingScreen() {
           {error}
         </Txt>
       ) : null}
-      <ButtonPrimary label="C'est parti" onPress={submit} loading={loading} />
+      <ButtonPrimary label="Commencer à apprendre" onPress={submit} loading={loading} />
     </AuthScaffold>
   );
 }

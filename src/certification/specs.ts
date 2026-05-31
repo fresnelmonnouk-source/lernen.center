@@ -6,7 +6,7 @@
  * round-trip pour découvrir ce qui est disponible — si le backend change,
  * ce fichier doit suivre.
  *
- * Source de vérité : Goethe-Zertifikat (format publiquement documenté).
+ * Format technique : conforme aux standards CECRL publics A1-B2.
  */
 
 import type { Level } from '@/lib/api';
@@ -74,5 +74,5 @@ export const SCHREIBEN_TASKS: Record<Level, SchreibenTaskSpec[]> = {
 
 export const LEVELS: Level[] = ['A1', 'A2', 'B1', 'B2'];
 
-export const GOETHE_DISCLAIMER =
-  'Tests inspirés du format Goethe-Zertifikat. Contenus 100% originaux générés par IA. Non affilié au Goethe-Institut.';
+export const CERT_DISCLAIMER =
+  'Préparation indépendante aux certifications d’allemand. Contenus 100% générés par IA, sans affiliation à un organisme officiel.';

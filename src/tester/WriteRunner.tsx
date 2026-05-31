@@ -66,7 +66,7 @@ export function WriteRunner({ words, onComplete }: Props) {
           {word.f}
         </Txt>
         <Txt font="mono" size={10} tone="ink2" uppercase tracking={1.5}>
-          Écris le mot allemand (avec l’article)
+          Tape le mot allemand avec son article (der/die/das)
         </Txt>
       </HardShadowBox>
 
@@ -85,7 +85,7 @@ export function WriteRunner({ words, onComplete }: Props) {
       {checked ? (
         <HardShadowBox background={correct ? Accent.green : Accent.red} offset={Shadow.sm} contentStyle={styles.feedback}>
           <Txt font="monoBold" size={12} color="#FFFFFF" uppercase tracking={1}>
-            {correct ? 'Correct !' : 'Faux'}
+            {correct ? 'Correct' : 'Incorrect'}
           </Txt>
           {!correct ? (
             <Txt font="bold" size={16} color="#FFFFFF">

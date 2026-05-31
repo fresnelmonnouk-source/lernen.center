@@ -42,8 +42,9 @@ export function MenuList({ items }: { items: MenuItem[] }) {
 function Row({ item }: { item: MenuItem }) {
   const { colors } = useTheme();
   const markColor = item.color ?? colors.ink;
-  // Marker text contrasts with its fill: dark text on yellow, else cream.
-  const markText = markColor === Accent.yellow ? colors.ink : '#F4F0E6';
+  // Hardcodes volontaires : les accents (red/blue/green/yellow) sont fixes peu
+  // importe le thème, donc le texte du marker doit l'être aussi (contraste).
+  const markText = markColor === Accent.yellow ? '#0A0A0A' : '#F4F0E6';
 
   return (
     <View style={[styles.row, item.locked && styles.rowLocked]}>
@@ -65,7 +66,7 @@ function Row({ item }: { item: MenuItem }) {
           ) : null}
         </View>
         <Txt font="display" size={22}>
-          {item.locked ? '🔒' : '→'}
+          {item.locked ? '—' : '→'}
         </Txt>
       </View>
     </View>

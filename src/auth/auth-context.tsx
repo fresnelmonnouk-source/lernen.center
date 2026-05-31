@@ -43,13 +43,13 @@ async function fetchProfile(userId: string): Promise<Profile | null> {
 function mapAuthError(raw: string): string {
   const m = raw.toLowerCase();
   if (m.includes('invalid login')) return 'Email ou mot de passe incorrect.';
-  if (m.includes('already') && m.includes('regist')) return 'Un compte existe déjà avec cet email.';
-  if (m.includes('password') && m.includes('6')) return 'Mot de passe : 6 caractères minimum.';
+  if (m.includes('already') && m.includes('regist')) return 'Cet email a déjà un compte. Connecte-toi.';
+  if (m.includes('password') && m.includes('6')) return 'Mot de passe trop court (6 caractères min.).';
   if (m.includes('not confirmed') || (m.includes('email') && m.includes('confirm'))) {
-    return 'Confirme ton email avant de te connecter.';
+    return 'Email pas encore confirmé. Vérifie ta boîte mail.';
   }
   if (m.includes('valid email') || m.includes('invalid email')) return 'Email invalide.';
-  return 'Une erreur est survenue. Réessaie.';
+  return 'Connexion impossible. Réessaie dans un instant.';
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

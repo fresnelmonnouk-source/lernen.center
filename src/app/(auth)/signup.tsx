@@ -21,11 +21,11 @@ export default function SignupScreen() {
   const submit = async () => {
     setError(null);
     if (!email.trim() || !password) {
-      setError('Remplis tous les champs.');
+      setError('Renseigne email et mot de passe.');
       return;
     }
     if (password.length < 6) {
-      setError('Mot de passe : 6 caractères minimum.');
+      setError('Mot de passe trop court (6 caractères min.).');
       return;
     }
     setLoading(true);
@@ -42,11 +42,11 @@ export default function SignupScreen() {
 
   if (sent) {
     return (
-      <AuthScaffold eyebrow="Presque fini" title="Vérifie tes mails">
+      <AuthScaffold eyebrow="DERNIÈRE ÉTAPE" title="Email envoyé">
         <HardShadowBox contentStyle={styles.box}>
-          <Txt font="bold" size={16}>Un lien de confirmation t&apos;attend</Txt>
+          <Txt font="bold" size={16}>Active ton compte</Txt>
           <Txt font="body" size={14} tone="ink2" lineHeight={20}>
-            On a envoyé un email à {email.trim()}. Clique sur le lien pour activer ton compte, puis connecte-toi.
+            Clique sur le lien qu&apos;on vient d&apos;envoyer à {email.trim()} pour activer ton compte, puis connecte-toi.
           </Txt>
         </HardShadowBox>
         <Link href="/login" replace>

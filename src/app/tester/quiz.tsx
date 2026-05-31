@@ -78,7 +78,7 @@ export default function QuizScreen() {
 
   if (phase === 'done' && result) {
     const pct = Math.round((result.score / result.total) * 100);
-    const message = pct >= 80 ? 'Stark ! 💪' : pct >= 50 ? 'Pas mal, continue.' : 'À retravailler.';
+    const message = pct >= 80 ? 'Excellent. Tu maîtrises.' : pct >= 50 ? 'Correct. À consolider.' : 'À reprendre — relance un quiz.';
     return (
       <ScreenScaffold eyebrow="TESTER" title="Résultat">
         <View style={styles.scoreCard}>

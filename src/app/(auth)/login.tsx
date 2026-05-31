@@ -19,7 +19,7 @@ export default function LoginScreen() {
   const submit = async () => {
     setError(null);
     if (!email.trim() || !password) {
-      setError('Remplis tous les champs.');
+      setError('Renseigne email et mot de passe.');
       return;
     }
     setLoading(true);
@@ -34,7 +34,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <AuthScaffold eyebrow="Content de te revoir" title="Connexion">
+    <AuthScaffold eyebrow="BON RETOUR" title="Connexion">
       <Input
         label="Email"
         value={email}

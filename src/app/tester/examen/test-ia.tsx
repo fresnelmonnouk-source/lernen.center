@@ -145,10 +145,13 @@ export default function TestIaScreen() {
       </View>
 
       <Txt font="body" size={12} tone="ink2">
-        L’examen est généré par l’IA (~70 % QCM, ~30 % questions ouvertes) puis corrigé avec un bilan personnalisé.
+        Questions générées par IA (~70% QCM, ~30% ouvertes). Bilan détaillé à la fin.
       </Txt>
       {errorBox}
-      <ButtonPrimary label="Générer l’examen" onPress={generate} loading={loading} color={Accent.purple} />
+      <ButtonPrimary label="Lancer l’examen" onPress={generate} loading={loading} color={Accent.purple} />
+      <Txt font="serifItalic" size={11} tone="ink2" lineHeight={16}>
+        Généré par IA. Vérifie les points critiques avant un examen réel.
+      </Txt>
     </ScreenScaffold>
   );
 }

@@ -5,7 +5,7 @@ import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
 import { Chip } from '@/components/ui/Chip';
 import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
 import { Txt } from '@/components/ui/Txt';
-import { GOETHE_DISCLAIMER, LESEN_PARTS, LEVELS } from '@/certification/specs';
+import { CERT_DISCLAIMER, LESEN_PARTS, LEVELS } from '@/certification/specs';
 import { LesenResults } from '@/certification/LesenResults';
 import { LesenRunner, type LesenAnswerMap } from '@/certification/LesenRunner';
 import { api, ApiError, type CertLesenResponse, type Level } from '@/lib/api';
@@ -85,8 +85,8 @@ export default function LesenScreen() {
   return (
     <ScreenScaffold eyebrow="CERTIFICATION" title="Lesen">
       <Txt font="serifItalic" size={14} tone="ink2" lineHeight={20}>
-        Compréhension écrite au format Goethe-Zertifikat. Chaque test est généré par IA ; la correction
-        est immédiate et locale.
+        Compréhension écrite niveau A1 à B2. Chaque test est généré par IA ; la correction est immédiate
+        et locale.
       </Txt>
 
       <View style={styles.group}>
@@ -119,7 +119,7 @@ export default function LesenScreen() {
       <ButtonPrimary label="Générer le test" onPress={generate} loading={loading} color={Accent.blue} />
 
       <Txt font="serifItalic" size={11} tone="ink2" lineHeight={16}>
-        {GOETHE_DISCLAIMER}
+        {CERT_DISCLAIMER}
       </Txt>
     </ScreenScaffold>
   );

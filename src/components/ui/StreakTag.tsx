@@ -4,7 +4,7 @@ import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Accent, Border, Shadow, Spacing } from '@/theme/tokens';
 
-/** Yellow streak chip, rotated -2° (signature). E.g. 🔥 5j. */
+/** Yellow streak chip, rotated -2° (signature). Brutaliste : pas d'emoji. */
 export function StreakTag({ days }: { days: number }) {
   const { colors } = useTheme();
   return (
@@ -12,7 +12,7 @@ export function StreakTag({ days }: { days: number }) {
       <View style={[styles.shadow, { backgroundColor: colors.ink }]} />
       <View style={[styles.tag, { backgroundColor: Accent.yellow, borderColor: colors.ink }]}>
         <Txt font="monoBold" size={12} color="#0A0A0A">
-          🔥 {days}j
+          SÉRIE · {days}J
         </Txt>
       </View>
     </View>
