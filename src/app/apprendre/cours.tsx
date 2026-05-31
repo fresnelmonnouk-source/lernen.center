@@ -63,11 +63,20 @@ export default function CoursScreen() {
     };
   }, [level, category]);
 
+  /** Génère le cours. Sujet optionnel : si vide, on pioche au hasard une suggestion.
+   *  Si aucune suggestion n'est encore chargée, on affiche une erreur explicite. */
   const generate = async () => {
-    const t = topic.trim();
     setError(null);
-    if (t.length < 3) {
-      setError('Donne un sujet (3 caractères minimum).');
+    let t = topic.trim();
+    if (t.length === 0) {
+      if (suggestions.length === 0) {
+        setError('Donne un sujet ou attends que les suggestions se chargent.');
+        return;
+      }
+      t = suggestions[Math.floor(Math.random() * suggestions.length)];
+      setTopic(t); // Reflète le choix de l'IA dans l'UI avant le départ.
+    } else if (t.length < 3 || t.length > 200) {
+      setError('Le sujet doit faire entre 3 et 200 caractères.');
       return;
     }
     setLoading(true);
@@ -81,6 +90,16 @@ export default function CoursScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  /** Tire une suggestion au hasard et la pose dans le champ sujet. */
+  const surpriseMe = () => {
+    if (suggestions.length === 0) {
+      setError('Aucune suggestion pour ces filtres pour l’instant. Réessaie dans un instant ou tape ton propre sujet.');
+      return;
+    }
+    setError(null);
+    setTopic(suggestions[Math.floor(Math.random() * suggestions.length)]);
   };
 
   const submitExam = async (answers: TestAnswer[]) => {
@@ -180,10 +199,10 @@ export default function CoursScreen() {
       </View>
 
       <Input
-        label="Sujet du cours"
+        label="Sujet du cours (optionnel)"
         value={topic}
         onChangeText={setTopic}
-        placeholder="ex. Le datif, les verbes séparables…"
+        placeholder="ex. Le datif, les verbes séparables… — ou laisse vide"
         maxLength={200}
         autoCapitalize="none"
       />
@@ -197,8 +216,19 @@ export default function CoursScreen() {
         </View>
       ) : null}
 
+      <Txt font="body" size={12} tone="ink2">
+        Sans sujet, l’IA en choisira un parmi les suggestions ci-dessus. Tu peux aussi cliquer « Surprends-moi ».
+      </Txt>
+
       {errorBox}
-      <ButtonPrimary label="Générer le cours" onPress={generate} loading={loading} color={Accent.purple} />
+      <View style={styles.actionsRow}>
+        <View style={styles.actionFlex}>
+          <ButtonPrimary label="Surprends-moi" onPress={surpriseMe} color={Accent.yellow} textColor="#0A0A0A" />
+        </View>
+        <View style={styles.actionFlex}>
+          <ButtonPrimary label="Générer le cours" onPress={generate} loading={loading} color={Accent.purple} />
+        </View>
+      </View>
     </ScreenScaffold>
   );
 }
@@ -207,4 +237,6 @@ const styles = StyleSheet.create({
   group: { gap: Spacing.two },
   row: { gap: Spacing.two, paddingRight: Spacing.four },
   wrapRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
+  actionsRow: { flexDirection: 'row', gap: Spacing.two },
+  actionFlex: { flex: 1 },
 });

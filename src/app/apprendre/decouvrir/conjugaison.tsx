@@ -6,10 +6,10 @@ import { Chip } from '@/components/ui/Chip';
 import { Input } from '@/components/ui/Input';
 import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
 import { Txt } from '@/components/ui/Txt';
+import { AiDrill } from '@/conjugaison/AiDrill';
 import { ConjugateResult } from '@/conjugaison/ConjugateResult';
 import { IrregularResult } from '@/conjugaison/IrregularResult';
 import { LocalDetail } from '@/conjugaison/LocalDetail';
-import { LocalDrill } from '@/conjugaison/LocalDrill';
 import { LocalLookup } from '@/conjugaison/LocalLookup';
 import { TENSES, TENSE_GLOSS, type Tense } from '@/conjugaison/tenses';
 import { getVerbs, VERB_TYPES, VERB_TYPE_LABEL, type VerbEntry, type VerbType } from '@/data/verbs';
@@ -22,7 +22,7 @@ const MODES: { key: Mode; label: string; sublabel: string; color: string }[] = [
   { key: 'conjuguer', label: 'Conjuguer', sublabel: 'IA live', color: Accent.blue },
   { key: 'irregulier', label: 'Régulier ?', sublabel: 'IA live', color: Accent.red },
   { key: 'consulter', label: 'Consulter', sublabel: 'Hors-ligne', color: Accent.green },
-  { key: 'drill', label: 'Tableau', sublabel: 'Hors-ligne', color: Accent.purple },
+  { key: 'drill', label: 'Tableau', sublabel: 'IA live', color: Accent.purple },
 ];
 
 const LEVELS: Level[] = ['A1', 'A2', 'B1', 'B2'];
@@ -153,7 +153,7 @@ export default function ConjugaisonScreen() {
         )
       ) : null}
 
-      {mode === 'drill' ? <LocalDrill /> : null}
+      {mode === 'drill' ? <AiDrill /> : null}
     </ScreenScaffold>
   );
 }
