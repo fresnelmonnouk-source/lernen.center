@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 2340" width="1080" height="2340">
+  <!-- SPLASH SOMBRE 1080x2340. Fond ink #0A0A0A. Cercle maroon (#7A2630) debordant
+       coin haut-gauche (partiel). Centre : icone dans une TUILE cream squircle (coins
+       arrondis iOS) contenant le mark complet (montant bleu, pied jaune incline, quart-
+       cercle rouge au coin haut-droite de la tuile). Wordmark LERNEN cream / .de rouge
+       serif italic. Tagline mono gris letter-spaced. Carre jaune vif incline debordant
+       le bord droit. Barre de progression ~55% jaune sur gris fonce.
+       NB : la tuile squircle est le SEUL arrondi tolere (specifique splash sombre). -->
+  <defs>
+    <!-- Squircle iOS approxime : superellipse rendue via rect a grand rayon -->
+    <clipPath id="tile">
+      <rect x="350" y="560" width="380" height="380" rx="86" ry="86"/>
+    </clipPath>
+  </defs>
+
+  <!-- Fond ink plein -->
+  <rect width="1080" height="2340" fill="#0A0A0A"/>
+
+  <!-- Cercle maroon debordant coin haut-GAUCHE (partiel) -->
+  <circle cx="40" cy="-60" r="430" fill="#7A2630"/>
+
+  <!-- Carre jaune VIF incline debordant le bord droit (milieu-bas) -->
+  <g transform="rotate(14 1080 1640)">
+    <rect x="900" y="1480" width="320" height="320" fill="#FFD60A"/>
+  </g>
+
+  <!-- ===== TUILE cream squircle + mark a l'interieur ===== -->
+  <!-- Tuile 380x380 a (350,560). Le mark plein cadre y est cadre comme le master :
+       quart-cercle rouge au coin haut-droite de la tuile, montant bleu, pied jaune. -->
+  <rect x="350" y="560" width="380" height="380" rx="86" ry="86" fill="#F4F0E6"/>
+  <g clip-path="url(#tile)">
+    <!-- master 200 -> tuile 380 (facteur 1.9), origine tuile (350,560) -->
+    <g transform="translate(350 560) scale(1.9)">
+      <path d="M200 0 V96 A96 96 0 0 1 104 0 Z" fill="#E63946"/>
+      <rect x="44" y="44" width="40" height="112" fill="#1E40AF"/>
+      <g transform="rotate(-8 120 132)">
+        <rect x="84" y="112" width="72" height="44" fill="#FFD60A"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ===== WORDMARK : LERNEN en cream, .de en rouge serif italic ===== -->
+  <text x="540" y="1110" text-anchor="middle"
+        font-family="'Bricolage Grotesque', 'Arial Black', sans-serif"
+        font-weight="800" font-size="132" fill="#F4F0E6" letter-spacing="-2">LERNEN<tspan
+        font-family="'DM Serif Display', Georgia, serif" font-weight="400"
+        font-style="italic" fill="#E63946" font-size="132" letter-spacing="0">.de</tspan></text>
+
+  <!-- ===== TAGLINE : mono, MAJUSCULES, gris assourdi, tres letter-spaced ===== -->
+  <text x="540" y="1220" text-anchor="middle"
+        font-family="'JetBrains Mono', 'Courier New', monospace"
+        font-weight="400" font-size="40" fill="#8A847A"
+        letter-spacing="14">APPRENDS L'ALLEMAND</text>
+
+  <!-- ===== BARRE DE PROGRESSION (bas) : ~55% rempli en jaune, reste gris fonce ===== -->
+  <rect x="240" y="2120" width="600" height="16" fill="#242424"/>
+  <rect x="240" y="2120" width="330" height="16" fill="#FFD60A"/>
+</svg>

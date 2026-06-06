@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Android adaptive BACKGROUND : cream #F4F0E6 uni, bord-a-bord.
+       (Fourni en filet de securite ; app.json gere deja backgroundColor.)
+       Pas de grille : le masquage circulaire couperait la trame de facon disgracieuse. -->
+  <rect width="1024" height="1024" fill="#F4F0E6"/>
+</svg>

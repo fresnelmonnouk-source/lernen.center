@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { AuthProvider, useAuth } from '@/auth/auth-context';
+import { BrandSplash } from '@/components/ui/BrandSplash';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { env } from '@/lib/env';
 import { ThemeProvider, useTheme } from '@/theme/theme-context';
@@ -89,7 +90,7 @@ function RootNavigator() {
   }, [loading, session, profile, segments, router]);
 
   if (loading && !env.devBypassAuth) {
-    return <View style={{ flex: 1, backgroundColor: colors.cream }} />;
+    return <BrandSplash />;
   }
 
   return (
