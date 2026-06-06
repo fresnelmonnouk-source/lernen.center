@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Lernen.de — Splash motion (4,0 s, boucle)</title>
+
+<!--
+  ============================================================================
+  SPLASH LERNEN.DE — animation de splash screen Néo-Bauhaus brutaliste
+  Auteur motion : Hugo. Implémentation : DOM/CSS + SVG inline, vanilla JS.
+  ----------------------------------------------------------------------------
+  POURQUOI DOM/SVG plutôt que canvas :
+   - chaque forme du mark et chaque lettre du wordmark a son propre transform,
+     ce qui colle 1:1 avec un spec qui raisonne en transforms par élément ;
+   - le rendu typographique (Archivo 900 / Playfair italic / Space Mono) est
+     natif et fidèle, sans mesure de glyphes au pixel comme en canvas ;
+   - render(t) n'écrit que des styles : trivial à rejouer depuis __seek.
+
+  PRINCIPE D'HORLOGE :
+   - t = temps ABSOLU de l'animation en secondes, 0 → 4 (DURATION).
+   - une seule fonction render(t) calcule TOUT l'état à l'instant t.
+   - la boucle rAF appelle render((elapsed) % DURATION) → boucle propre.
+   - __seek(s) appelle render(clamp(s)) sans la boucle → frames exactes pour QA.
+  ============================================================================
+-->
+
+<!-- Google Fonts : Archivo 900, Playfair Display italic 700, Space Mono 700.
+     On charge AVANT de démarrer l'horloge (document.fonts.ready, cf. JS) pour
+     éviter que le wordmark rende en police de repli (bug invisible). -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Archivo:wght@900&family=Playfair+Display:ital,wght@1,700&family=Space+Mono:wght@700&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+  /* ---- Palette EXACTE (aucune couleur hors de cette liste) ---------------- */
+  :root {
+    --cream:  #F4F0E6; /* fond / letterbox / fond tuile */
+    --ink:    #0A0A0A; /* noir : wordmark, barre noire, statut */
+    --red:    #E63946; /* die : quart-cercle, suffixe .de */
+    --yellow: #FFD60A; /* pied jaune, carré décor */
+    --blue:   #1E40AF; /* der : fût */
+    --gray:   #6C6452; /* texte secondaire : tagline */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--cream);   /* letterbox crème hors du canvas mis à l'échelle */
+    overflow: hidden;
+  }
+
+  /* La scène occupe tout le viewport et centre le canvas logique. */
+  #scene {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
+  }
+
+  /* ---- Canvas LOGIQUE 720 × 1280, mis à l'échelle pour remplir l'écran ----
+     scale(min(vw/720, vh/1280)) appliqué via JS (--scale). Origin centre.
+     Les contrôles (lecture/pause) sont HORS de cet élément → non scalés. */
+  #stage {
+    position: relative;
+    width: 720px;
+    height: 1280px;
+    background: var(--cream);
+    transform: scale(var(--scale, 1));
+    transform-origin: center center;
+    flex: 0 0 auto;
+    overflow: hidden;
+  }
+
+  /* Tous les calques absolus partagent l'espace 720×1280. */
+  .layer { position: absolute; top: 0; left: 0; width: 720px; height: 1280px; }
+
+  /* ---- DÉCOR permanent (hors groupe splash, jamais affecté par le fondu) -- */
+  #decor { z-index: 1; }
+  #decor svg { position: absolute; top: 0; left: 0; }
+
+  /* ---- GROUPE SPLASH (icône + wordmark + tagline + loader) : fond du fondu -- */
+  #splash { z-index: 2; }
+
+  /* Tuile arrondie 300×300 contenant le mark, fond crème, overflow caché.
+     rayon = 22,5% = 67,5px. Positionnée left:210 top:332. */
+  #iconTile {
+    position: absolute;
+    left: 210px;
+    top: 332px;
+    width: 300px;
+    height: 300px;
+    background: var(--cream);
+    border-radius: 67.5px;        /* squircle toléré (cf. visual-brand §3.0) */
+    overflow: hidden;
+    transform-origin: center center;
+    /* opacity + scale pilotés par render(t) */
+  }
+  /* SVG du mark : viewBox 200 dessiné dans 300 → facteur ×1,5 natif. */
+  #iconTile svg { display: block; width: 300px; height: 300px; }
+
+  /* ---- Wordmark « LERNEN.de » ------------------------------------------- */
+  /* Conteneur centré sur x=360 ; baseline ≈ y=772. On aligne sur baseline
+     via une ligne flex alignée en bas, ancrée par son centre horizontal. */
+  #wordmark {
+    position: absolute;
+    left: 360px;                  /* centre horizontal du canvas */
+    top: 772px;                   /* ≈ baseline ; on remonte le texte dessus */
+    transform: translateX(-50%);  /* centrage horizontal réel */
+    display: flex;
+    align-items: baseline;        /* « .de » assis sur la baseline de LERNEN */
+    white-space: nowrap;
+    line-height: 1;
+  }
+  /* Chaque lettre est un span pour l'animation cascade individuelle. */
+  #wordmark .letter {
+    display: inline-block;
+    font-family: "Archivo", "Arial Black", system-ui, sans-serif;
+    font-weight: 900;
+    font-size: 88px;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    line-height: 1;
+    /* La baseline du flex se cale sur le bas du glyphe ; on remonte le bloc
+       pour que la baseline visuelle tombe ≈ y=772 (cap haut au-dessus). */
+    transform: translateY(0);     /* piloté par render(t) */
+    will-change: transform, opacity;
+  }
+  /* Suffixe « .de » : Playfair italic 700, rouge, posé bas-gauche. */
+  #wordmark #suffix {
+    display: inline-block;
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 50px;
+    color: var(--red);
+    margin-left: 3px;
+    line-height: 1;
+    transform-origin: left bottom;  /* pop depuis le coin bas-gauche */
+    transform: scale(0.4);          /* piloté par render(t) */
+    will-change: transform, opacity;
+  }
+
+  /* ---- Tagline « APPRENDS L'ALLEMAND » ---------------------------------- */
+  #tagline {
+    position: absolute;
+    left: 0;
+    top: 812px;
+    width: 720px;
+    text-align: center;
+    font-family: "Space Mono", "Courier New", monospace;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--gray);
+    /* opacity pilotée par render(t) ; on compense le letter-spacing à droite
+       pour garder l'optique centrée. */
+    padding-left: 0.24em;
+    will-change: opacity;
+  }
+
+  /* ---- Barre de chargement : left:220 top:1120 w:280 h:10 --------------- */
+  #loaderTrack {
+    position: absolute;
+    left: 220px;
+    top: 1120px;
+    width: 280px;
+    height: 10px;
+    background: rgba(10, 10, 10, 0.14); /* piste */
+    overflow: hidden;
+    will-change: opacity;
+  }
+  #loaderFill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 10px;
+    width: 0;                     /* width pilotée par render(t), max 280 */
+    background: var(--ink);       /* remplissage noir */
+  }
+
+  /* ---- Barre de statut (haut) : toujours visible, hors groupe splash ----- */
+  #statusbar {
+    position: absolute;
+    left: 0;
+    top: 36px;
+    width: 720px;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 3;
+  }
+  #statusbar .clock {
+    font-family: "Space Mono", "Courier New", monospace;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+  #statusbar .glyphs {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  /* ---- Contrôle Lecture/Pause : HORS du #stage scalé --------------------- */
+  #controls {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+  #playPause {
+    font-family: "Space Mono", "Courier New", monospace;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--cream);
+    border: 2px solid var(--ink);   /* liseré brutaliste discret */
+    border-radius: 0;               /* angles vifs */
+    padding: 8px 16px;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.2s ease;
+  }
+  #playPause:hover { opacity: 1; }
+
+  /* ---- prefers-reduced-motion : ÉTAT FINAL figé, aucune transition ------- */
+  @media (prefers-reduced-motion: reduce) {
+    #playPause { display: none; } /* pas de boucle à contrôler */
+  }
+</style>
+</head>
+
+<body>
+  <div id="scene">
+    <div id="stage">
+
+      <!-- ============ DÉCOR PERMANENT (jamais affecté par le fondu) ======= -->
+      <!-- Formes primaires pures qui débordent du cadre (langage hero). -->
+      <div id="decor" class="layer">
+        <svg width="720" height="1280" viewBox="0 0 720 1280" aria-hidden="true">
+          <!-- Disque rouge, centre ≈ (60,60), r=180, opacité 0.14 -->
+          <circle id="decRed" cx="60" cy="60" r="180" fill="#E63946" opacity="0.14" />
+          <!-- Carré jaune incliné 300×300, coin ≈ (510,620), rotate 12°, op 0.20 -->
+          <rect id="decYellow" x="510" y="620" width="300" height="300"
+                fill="#FFD60A" opacity="0.20" />
+          <!-- Anneau bleu (cercle évidé, bordure 10px), centre ≈ (570,310), r=60, op 0.12 -->
+          <circle id="decBlue" cx="570" cy="310" r="60" fill="none"
+                  stroke="#1E40AF" stroke-width="10" opacity="0.12" />
+        </svg>
+      </div>
+
+      <!-- ============ GROUPE SPLASH (fondu de bouclage global) ============ -->
+      <div id="splash" class="layer">
+
+        <!-- Tuile + mark Bauhaus « 03 ». viewBox 200 dessiné en 300 (×1,5). -->
+        <div id="iconTile">
+          <svg viewBox="0 0 200 200" aria-label="Logo Lernen">
+            <!-- fond crème de la tuile (la tuile a déjà ce fond, on double pour SVG plein) -->
+            <rect x="0" y="0" width="200" height="200" fill="#F4F0E6" />
+
+            <!-- Fût bleu : rect 44,44,40,112. Entre par le haut (translateY négatif). -->
+            <g id="markBlue">
+              <rect x="44" y="44" width="40" height="112" fill="#1E40AF" />
+            </g>
+
+            <!-- Quart de cercle rouge : grandit depuis le coin haut-droit (200,0). -->
+            <g id="markRed">
+              <path d="M200 0 V96 A96 96 0 0 1 104 0 Z" fill="#E63946" />
+            </g>
+
+            <!-- Pied jaune : rect 84,112,72,44, rotate -8° autour de (120,132).
+                 La translation d'entrée (depuis la gauche) s'ajoute À CETTE
+                 rotation de base ; ordre géré dans render(t). -->
+            <g id="markYellow">
+              <rect x="84" y="112" width="72" height="44" fill="#FFD60A" />
+            </g>
+          </svg>
+        </div>
+
+        <!-- Wordmark « LERNEN.de » : 6 lettres en cascade + suffixe rouge. -->
+        <div id="wordmark">
+          <span class="letter">L</span>
+          <span class="letter">E</span>
+          <span class="letter">R</span>
+          <span class="letter">N</span>
+          <span class="letter">E</span>
+          <span class="letter">N</span>
+          <span id="suffix">.de</span>
+        </div>
+
+        <!-- Tagline -->
+        <div id="tagline">APPRENDS L'ALLEMAND</div>
+
+        <!-- Barre de chargement -->
+        <div id="loaderTrack">
+          <div id="loaderFill"></div>
+        </div>
+
+      </div><!-- /#splash -->
+
+      <!-- ============ BARRE DE STATUT (toujours pleine opacité) ========== -->
+      <div id="statusbar">
+        <span class="clock">9:41</span>
+        <span class="glyphs">&#9634;&#9650;&#9646;</span><!-- ▢ ▲ ▮ -->
+      </div>
+
+    </div><!-- /#stage -->
+  </div><!-- /#scene -->
+
+  <!-- Contrôle hors de l'élément scalé -->
+  <div id="controls">
+    <button id="playPause" type="button">Pause</button>
+  </div>
+
+<script>
+"use strict";
+(function () {
+
+  // =========================================================================
+  // 1. CONSTANTES & EASINGS
+  // =========================================================================
+  const DURATION = 4.0; // durée totale de la boucle, en secondes
+
+  // Easings normalisées t∈[0,1] — fournies à la lettre par le spec.
+  const Easing = {
+    linear:       t => t,
+    easeInCubic:  t => t*t*t,
+    easeOutCubic: t => (--t)*t*t + 1,
+    easeInOutCubic: t => t < 0.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2) + 1,
+    // easeOutBack = signature « snap » brutaliste : overshoot visible.
+    easeOutBack:  t => { const c1=1.70158, c3=c1+1; return 1 + c3*Math.pow(t-1,3) + c1*Math.pow(t-1,2); },
+  };
+
+  // seg(t,a,b,ease) : progression 0→1 d'un segment temporel [a,b], easée.
+  // Hors segment : 0 avant a, 1 après b. C'est le cœur du séquencement :
+  // chaque phase de l'animation est un appel à seg sur le t ABSOLU.
+  function seg(t, a, b, ease) {
+    ease = ease || Easing.linear;
+    if (t <= a) return 0;
+    if (t >= b) return 1;
+    return ease((t - a) / (b - a));
+  }
+
+  // =========================================================================
+  // 2. RÉFÉRENCES DOM
+  // =========================================================================
+  const stage     = document.getElementById("stage");
+  const iconTile  = document.getElementById("iconTile");
+  const markBlue  = document.getElementById("markBlue");
+  const markRed   = document.getElementById("markRed");
+  const markYellow= document.getElementById("markYellow");
+  const wordmark  = document.getElementById("wordmark");
+  const letters   = Array.prototype.slice.call(wordmark.querySelectorAll(".letter"));
+  const suffix    = document.getElementById("suffix");
+  const tagline   = document.getElementById("tagline");
+  const loaderTrack = document.getElementById("loaderTrack");
+  const loaderFill  = document.getElementById("loaderFill");
+  const splash    = document.getElementById("splash");
+  const decRed    = document.getElementById("decRed");
+  const decYellow = document.getElementById("decYellow");
+  const decBlue   = document.getElementById("decBlue");
+  const playPause = document.getElementById("playPause");
+
+  // =========================================================================
+  // 3. RESPONSIVE — scale du canvas logique pour remplir le viewport
+  //    scale(min(vw/720, vh/1280)) ; le reste est letterbox crème.
+  // =========================================================================
+  function fit() {
+    const s = Math.min(window.innerWidth / 720, window.innerHeight / 1280);
+    stage.style.setProperty("--scale", s);
+  }
+  window.addEventListener("resize", fit);
+  fit();
+
+  // =========================================================================
+  // 4. RENDER(t) — calcule TOUT l'état visuel à l'instant absolu t (secondes).
+  //    Aucune dépendance au temps réel : pure fonction état←t. C'est ce qui
+  //    rend __seek déterministe et le rendu reduced-motion trivial (render à 4).
+  //
+  //    NOTE unités du mark : le SVG est en viewBox 200, dessiné dans une tuile
+  //    300 (×1,5). Les transforms du spec (translateY −180, translateX −150…)
+  //    sont exprimés en « unités viewBox-200 » → on les applique DANS le SVG,
+  //    donc en coordonnées 200 (l'échelle ×1,5 de la tuile s'applique ensuite).
+  // =========================================================================
+  function render(t) {
+
+    // ---- 4.1 CONTENEUR ICÔNE (tuile) : apparition + scale + settle --------
+    // Pourquoi : la tuile « pose » l'identité ; elle apparaît tôt (0.15→0.32),
+    // grandit avec un easeOutBack (snap brutaliste) jusqu'à 0.58, puis un
+    // micro-rebond « settle » (1.45→1.70) donne le poids d'un objet qui se cale.
+    const tileOpacity = seg(t, 0.15, 0.32);
+    const settle = 1 + Math.sin(seg(t, 1.45, 1.70) * Math.PI) * 0.03;
+    const tileScale = (0.4 + 0.6 * seg(t, 0.15, 0.58, Easing.easeOutBack)) * settle;
+    iconTile.style.opacity = tileOpacity;
+    iconTile.style.transform = "scale(" + tileScale + ")";
+
+    // ---- 4.2 ASSEMBLAGE DU MARK (ordre : bleu → rouge → jaune) -----------
+    // Fût bleu : descend du haut. Unités viewBox-200, donc translate en SVG.
+    // Visible dès t≥0.50 (avant : translaté tout en haut, hors tuile de toute façon).
+    const blueY = (1 - seg(t, 0.50, 0.92, Easing.easeOutCubic)) * -180; // 0 à -180
+    markBlue.setAttribute("transform", "translate(0," + blueY + ")");
+    markBlue.style.opacity = (t >= 0.50) ? 1 : 0;
+
+    // Quart rouge : grandit depuis le coin haut-droit (ancre 200,0).
+    // transform composite : translate(200,0) scale(k) translate(-200,0).
+    const k = seg(t, 0.80, 1.20, Easing.easeOutCubic);
+    if (k <= 0) {
+      markRed.style.opacity = 0;                 // invisible si k=0
+    } else {
+      markRed.style.opacity = 1;
+      markRed.setAttribute("transform",
+        "translate(200,0) scale(" + k + ") translate(-200,0)");
+    }
+
+    // Pied jaune : entre par la gauche (translateX), PUIS rotation de base -8°
+    // autour de (120,132). L'ordre des transforms place la translation d'entrée
+    // EN PLUS de la rotation : translate(...) appliqué avant rotate(...) →
+    // on glisse horizontalement puis on tient l'inclinaison signature.
+    const yellowX = (1 - seg(t, 1.05, 1.55, Easing.easeOutBack)) * -150; // -150 à 0
+    markYellow.setAttribute("transform",
+      "translate(" + yellowX + ",0) rotate(-8 120 132)");
+    markYellow.style.opacity = (t >= 1.05) ? 1 : 0;
+
+    // ---- 4.3 WORDMARK : cascade des 6 lettres (snap individuel) -----------
+    // Pourquoi la cascade : un décalage de 50 ms par lettre crée un rythme de
+    // « frappe » qui lit la marque de gauche à droite — l'easeOutBack donne à
+    // chaque lettre le même snap brutaliste que le mark.
+    for (let i = 0; i < letters.length; i++) {
+      const p = seg(t, 1.50 + i * 0.05, 1.80 + i * 0.05, Easing.easeOutBack);
+      letters[i].style.transform = "translateY(" + ((1 - p) * 22) + "px)";
+      letters[i].style.opacity = p;
+    }
+
+    // Suffixe « .de » : pop en dernier, depuis bas-gauche (transform-origin CSS).
+    const deP = seg(t, 1.88, 2.18, Easing.easeOutBack);
+    suffix.style.transform = "scale(" + (0.4 + 0.6 * deP) + ")";
+    suffix.style.opacity = deP;
+
+    // ---- 4.4 TAGLINE : simple fondu après l'installation du wordmark ------
+    tagline.style.opacity = seg(t, 2.20, 2.65);
+
+    // ---- 4.5 BARRE DE CHARGEMENT -----------------------------------------
+    // Piste : fondu d'apparition. Remplissage : progression easeInOutCubic
+    // (accélère puis décélère) → impression de « chargement réel » qui se cale.
+    loaderTrack.style.opacity = seg(t, 1.55, 1.80);
+    loaderFill.style.width = (seg(t, 1.60, 2.95, Easing.easeInOutCubic) * 280) + "px";
+
+    // ---- 4.6 FONDU DE BOUCLAGE du GROUPE splash --------------------------
+    // Tout le groupe (icône + wordmark + tagline + loader) s'efface 3.30→3.62.
+    // À 3.62 l'écran est crème pur → la boucle peut redémarrer sans à-coup.
+    splash.style.opacity = 1 - seg(t, 3.30, 3.62);
+
+    // ---- 4.7 DÉCOR PERMANENT : flottement parallaxe (t absolu, sans seg) --
+    // Hors groupe splash → opacité jamais touchée par le fondu. Le mouvement
+    // sinusoïdal lent donne de la profondeur sans attirer l'attention.
+    decRed.setAttribute("transform",    "translate(0," + (Math.sin(t * 0.7) * 12) + ")");
+    decYellow.setAttribute("transform",
+      "rotate(12 660 770) translate(0," + (Math.cos(t * 0.6) * 14) + ")");
+    decBlue.setAttribute("transform",   "translate(0," + (-Math.sin(t * 0.7) * 12) + ")");
+  }
+
+  // =========================================================================
+  // 5. BOUCLE rAF — pilote render(t) avec le t absolu modulo DURATION.
+  //    Séparée de render pour que __seek puisse réutiliser render seul.
+  // =========================================================================
+  let playing = false;
+  let rafId = null;
+  let startTime = null;   // horodatage rAF du début de cycle
+  let frozenT = 0;        // t figé courant (utilisé par __seek / pause)
+
+  function loop(now) {
+    if (!playing) return;
+    if (startTime === null) startTime = now;
+    // t absolu en boucle : (temps écoulé en s) modulo DURATION.
+    const t = ((now - startTime) / 1000) % DURATION;
+    frozenT = t;
+    render(t);
+    rafId = requestAnimationFrame(loop);
+  }
+
+  function play() {
+    if (playing) return;
+    playing = true;
+    // On repositionne startTime pour reprendre EXACTEMENT à frozenT (pas de saut).
+    startTime = performance.now() - frozenT * 1000;
+    playPause.textContent = "Pause";
+    rafId = requestAnimationFrame(loop);
+  }
+
+  function pause() {
+    if (!playing) return;
+    playing = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    playPause.textContent = "Lecture";
+  }
+
+  // =========================================================================
+  // 6. API DE SEEK DÉTERMINISTE (QA / export de frames)
+  //    __seek(s) : fige l'horloge et rend la frame au temps absolu s (clamp 0→4).
+  //    __play() / __pause() : reprend / arrête la boucle rAF.
+  // =========================================================================
+  window.__seek = function (seconds) {
+    pause(); // un seek implique l'arrêt de la boucle pour figer la frame
+    let s = Number(seconds);
+    if (!isFinite(s)) s = 0;
+    s = Math.max(0, Math.min(DURATION, s)); // clamp 0→4
+    frozenT = s;
+    render(s);
+    return s;
+  };
+  window.__play  = function () { play();  };
+  window.__pause = function () { pause(); };
+
+  // =========================================================================
+  // 7. CONTRÔLE LECTURE/PAUSE
+  // =========================================================================
+  playPause.addEventListener("click", function () {
+    if (playing) pause(); else play();
+  });
+
+  // =========================================================================
+  // 8. DÉMARRAGE
+  //    - prefers-reduced-motion: reduce → on rend l'ÉTAT FINAL (t=DURATION,
+  //      mais avant le fondu de bouclage → on prend t=3.30, dernier instant où
+  //      tout est plein et assemblé) et on NE démarre PAS la boucle.
+  //      (À t=4.0 le splash serait déjà fondu ; l'état final « plein » = 3.30.)
+  //    - sinon → on attend document.fonts.ready (sinon wordmark en repli) puis
+  //      on lance la boucle.
+  // =========================================================================
+  const reduceMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function startWhenFontsReady(cb) {
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(cb).catch(cb);
+    } else {
+      cb();
+    }
+  }
+
+  // Cale la BASELINE du wordmark exactement à y=772 (spec : « baseline ≈ y=772 »).
+  // Le conteneur est en align-items:baseline, donc la baseline de la ligne tombe à
+  // (top + ascent de la police). On positionne donc top = 772 − ascent. L'ascent est
+  // lu sur les métriques RÉELLES d'Archivo 900 88px (mesuré APRÈS fonts.ready, sinon
+  // on lirait l'ascent de la police de repli). Déterministe et indépendant du scale.
+  function alignWordmarkBaseline() {
+    try {
+      const c = document.createElement("canvas").getContext("2d");
+      c.font = '900 88px "Archivo", "Arial Black", system-ui, sans-serif';
+      const m = c.measureText("LERNEN");
+      const ascent = (m && isFinite(m.fontBoundingBoxAscent))
+        ? m.fontBoundingBoxAscent
+        : 88 * 0.82; // repli si fontBoundingBoxAscent indisponible
+      wordmark.style.top = (772 - ascent) + "px";
+    } catch (e) {
+      wordmark.style.top = (772 - 88 * 0.82) + "px";
+    }
+  }
+
+  if (reduceMotion) {
+    // État final figé : mark complet + wordmark + tagline + loader plein.
+    // On rend à 3.30 (juste avant le fondu) pour avoir tout à pleine opacité.
+    startWhenFontsReady(function () {
+      alignWordmarkBaseline();
+      render(3.30);
+      // settle / decor figés à cet instant — aucune boucle, aucune animation.
+    });
+  } else {
+    startWhenFontsReady(function () {
+      // Baseline calée AVANT la première frame (sinon léger saut au 1er render).
+      alignWordmarkBaseline();
+      // Première frame nette à t=0 avant de lancer la boucle.
+      render(0);
+      play();
+    });
+  }
+
+})();
+</script>
+</body>
+</html>
