@@ -8,7 +8,7 @@
  *   import { api } from '@/lib/api';
  *   const res = await api.conjugate({ verb: 'gehen', tense: 'Perfekt' });
  */
-import { apiGet, apiPost } from './client';
+import { apiDelete, apiGet, apiPost } from './client';
 import type {
   CertLesenRequest,
   CertLesenResponse,
@@ -36,6 +36,30 @@ import type {
   GradeTestResponse,
 } from './types';
 
+/** RGPD — export de données (art. 20). */
+export type UserDataExport = {
+  success: boolean;
+  data: {
+    export_format: string;
+    exported_at: string;
+    account: {
+      id: string;
+      email: string;
+      provider: string;
+      created_at: string;
+      last_sign_in_at: string | null;
+      email_confirmed: boolean;
+    };
+    profile: Record<string, unknown> | null;
+    course_history: Record<string, unknown>[];
+    exam_history: Record<string, unknown>[];
+    certification_history: Record<string, unknown>[];
+  };
+};
+
+/** RGPD — suppression de compte (art. 17 + Apple 5.1.1). */
+export type DeleteAccountResponse = { success: boolean };
+
 export const api = {
   // Conjugaison
   conjugate: (body: ConjugateRequest) => apiPost<ConjugateResponse>('/api/conjugate', body),
@@ -57,8 +81,12 @@ export const api = {
   certLesen: (body: CertLesenRequest) => apiPost<CertLesenResponse>('/api/cert-lesen', body),
   certSchreiben: (body: CertSchreibenRequest) => apiPost<CertSchreibenResponse>('/api/cert-schreiben', body),
   gradeSchreiben: (body: GradeSchreibenRequest) => apiPost<GradeSchreibenResponse>('/api/grade-schreiben', body),
+
+  // Compte & données personnelles (RGPD)
+  exportUserData: () => apiGet<UserDataExport>('/api/user-data'),
+  deleteAccount: () => apiDelete<DeleteAccountResponse>('/api/user-data'),
 } as const;
 
 export { ApiError } from './errors';
-export { apiGet, apiPost } from './client';
+export { apiDelete, apiGet, apiPost } from './client';
 export * from './types';

@@ -72,3 +72,8 @@ export function apiGet<TResponse>(path: string, options?: RequestOptions): Promi
 export function apiPost<TResponse>(path: string, body?: unknown, options?: RequestOptions): Promise<TResponse> {
   return request<TResponse>('POST', path, body, options);
 }
+
+/** Authenticated DELETE by default. */
+export function apiDelete<TResponse>(path: string, options?: RequestOptions): Promise<TResponse> {
+  return request<TResponse>('DELETE', path, undefined, options);
+}

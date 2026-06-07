@@ -140,6 +140,10 @@ function RootNavigator() {
         <Stack.Screen name="tester/examen/certification/index" options={{ title: 'CERTIFICATION' }} />
         <Stack.Screen name="tester/examen/certification/lesen" options={{ title: 'LESEN' }} />
         <Stack.Screen name="tester/examen/certification/schreiben" options={{ title: 'SCHREIBEN' }} />
+
+        {/* COMPTE */}
+        <Stack.Screen name="profil" options={{ title: 'PROFIL' }} />
+        <Stack.Screen name="legal/index" options={{ title: 'LÉGAL' }} />
       </Stack>
     </>
   );

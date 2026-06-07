@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -6,6 +7,7 @@ import { ActionCard } from '@/components/ui/ActionCard';
 import { BrandMark } from '@/components/ui/BrandMark';
 import { GridBackground } from '@/components/ui/GridBackground';
 import { HeroCard } from '@/components/ui/HeroCard';
+import { IconButton } from '@/components/ui/IconButton';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { StatGrid } from '@/components/ui/Stat';
 import { StreakTag } from '@/components/ui/StreakTag';
@@ -17,6 +19,8 @@ import { Accent, MaxContentWidth, Spacing } from '@/theme/tokens';
 export default function HomeScreen() {
   const { colors } = useTheme();
   const { profile, signOut } = useAuth();
+  const router = useRouter();
+  const initial = (profile?.display_name?.trim()?.[0] ?? '·').toUpperCase();
   const level = profile?.current_level ?? 'A1';
   const streak = profile?.streak_days ?? 0;
   const isReturning = streak > 0;
@@ -32,6 +36,11 @@ export default function HomeScreen() {
               <View style={styles.headerRight}>
                 {isReturning ? <StreakTag days={streak} /> : null}
                 <ThemeToggle />
+                <IconButton onPress={() => router.push('/profil')} accessibilityLabel="Profil">
+                  <Txt font="display" size={16}>
+                    {initial}
+                  </Txt>
+                </IconButton>
               </View>
             </View>
 
