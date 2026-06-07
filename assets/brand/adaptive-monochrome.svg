@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Android 13+ icone themee MONOCHROME : silhouette une seule couleur (fill #000 sur
+       transparent), le systeme la teinte. Meme cadrage que le foreground (scale 0.62,
+       centree dans la zone de surete). Silhouette = L (montant + pied incline) + disque
+       rouge rendu en silhouette aussi -> le glyphe reste lisible "L + point". -->
+  <g transform="translate(173 264) scale(2.95)" fill="#000000">
+    <circle cx="152" cy="42" r="34"/>
+    <rect x="44" y="44" width="40" height="112"/>
+    <g transform="rotate(-8 120 132)">
+      <rect x="84" y="112" width="72" height="44"/>
+    </g>
+  </g>
+</svg>

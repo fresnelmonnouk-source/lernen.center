@@ -26,6 +26,10 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
+# emulator test artifacts (KODY test sessions)
+_shot*.png
+_ui*.xml
+
 # macOS
 .DS_Store
 *.pem

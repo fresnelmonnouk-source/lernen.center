@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Splash OS THEME SOMBRE : l'app-icone dans une TUILE cream squircle, fond transparent.
+       Posee sur ink #0A0A0A par le systeme. La tuile = l'icone reelle arrondie (quart-cercle
+       rouge ANCRE au coin haut-droite, clippe par le squircle -> coin arrondi rouge), montant
+       bleu, pied jaune. Coherent avec icon-ios + la maquette sombre Fresnel. Le bleu reste
+       lisible grace au fond cream de la tuile. Tuile 760x760 centree, rx 167 (~22%). -->
+  <defs>
+    <clipPath id="tile"><rect x="132" y="132" width="760" height="760" rx="167" ry="167"/></clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect x="132" y="132" width="760" height="760" fill="#F4F0E6"/>
+    <!-- master 200 -> tuile 760 (facteur 3.8), origine (132,132) -->
+    <path d="M892 132 V496.8 A364.8 364.8 0 0 1 527.2 132 Z" fill="#E63946"/>
+    <rect x="299.2" y="299.2" width="152" height="425.6" fill="#1E40AF"/>
+    <g transform="rotate(-8 588 633.6)">
+      <rect x="451.2" y="557.6" width="273.6" height="167.2" fill="#FFD60A"/>
+    </g>
+  </g>
+</svg>

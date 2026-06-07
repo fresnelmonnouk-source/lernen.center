@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- iOS app icon : plein cadre, AUCUNE transparence, AUCUN coin arrondi (iOS masque ~22%).
+       Rien de vital dans les coins. Le quart-cercle rouge au coin haut-droite deviendra
+       un coin arrondi sous le masque iOS = effet voulu. Mark = master ×5.12, recadré
+       optiquement (montant + pied légèrement remontés/centrés pour respirer sous le masque). -->
+  <rect width="1024" height="1024" fill="#F4F0E6"/>
+  <!-- Quart-de-cercle rouge, ancré coin haut-droite (rayon 491.52 = 96 ×5.12) -->
+  <path d="M1024 0 V491.52 A491.52 491.52 0 0 1 532.48 0 Z" fill="#E63946"/>
+  <!-- Montant vertical bleu = jambe du L (master x44-84 / y44-156 ×5.12) -->
+  <rect x="225.28" y="225.28" width="204.8" height="573.44" fill="#1E40AF"/>
+  <!-- Pied jaune incliné -8deg (master rect 72x44 ×5.12, centre 120,132 -> 614.4,675.84) -->
+  <g transform="rotate(-8 614.4 675.84)">
+    <rect x="430.08" y="573.44" width="368.64" height="225.28" fill="#FFD60A"/>
+  </g>
+</svg>

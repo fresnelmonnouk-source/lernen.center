@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Android adaptive FOREGROUND. Canvas 1024 = 108dp ; seuls les ~66% centraux
+       (carre/cercle de surete arete ~676, soit x/y 174..850) sont garantis visibles.
+       Le mark complet a plein bord serait ampute par le masque circulaire/squircle.
+       => mark reduit (~scale 0.62) et CENTRE dans la zone de surete, fond TRANSPARENT.
+       Le disque rouge FLOTTE detache du coin (look "splash clair"), en haut-droite du L,
+       pour ne jamais etre coupe. Background = calque separe (cream uni). -->
+  <!-- Groupe mark : echelle 0.62 du master 200, recentre dans la zone sure.
+       Master util x44..157 / y44..158 -> centre master (100.5, 101). Scale 3.18 (0.62*5.12),
+       translation pour centrer le L sur (512,540) avec compensation optique vers le bas. -->
+  <g transform="translate(173 264) scale(2.95)">
+    <!-- Disque rouge FLOTTANT detache (centre ~150,40 r=34) en haut-droite du montant -->
+    <circle cx="152" cy="42" r="34" fill="#E63946"/>
+    <!-- Montant vertical bleu (master geometrie d'origine) -->
+    <rect x="44" y="44" width="40" height="112" fill="#1E40AF"/>
+    <!-- Pied jaune incline -8deg -->
+    <g transform="rotate(-8 120 132)">
+      <rect x="84" y="112" width="72" height="44" fill="#FFD60A"/>
+    </g>
+  </g>
+</svg>

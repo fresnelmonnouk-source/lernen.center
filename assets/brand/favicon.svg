@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Favicon : lisible 16-48px. Mark complet conserve (il tient) : fond cream plein,
+       quart-cercle rouge ancre au coin haut-droite (marqueur le plus fort en petit),
+       L montant bleu + pied jaune. Master 200 -> 64 (facteur 0.32). Pas de grille,
+       angles vifs ; seul arrondi = le quart-cercle intrinseque au mark. Canvas carre. -->
+  <rect width="64" height="64" fill="#F4F0E6"/>
+  <path d="M64 0 V30.72 A30.72 30.72 0 0 1 33.28 0 Z" fill="#E63946"/>
+  <rect x="14.08" y="14.08" width="12.8" height="35.84" fill="#1E40AF"/>
+  <g transform="rotate(-8 38.4 42.24)">
+    <rect x="26.88" y="35.84" width="23.04" height="14.08" fill="#FFD60A"/>
+  </g>
+</svg>

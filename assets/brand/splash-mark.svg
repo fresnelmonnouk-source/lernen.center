@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Splash OS (expo-splash-screen) : le mark SEUL, centre, sur fond TRANSPARENT.
+       Pose sur cream en theme clair / ink en theme sombre par le systeme (backgroundColor).
+       Composition "splash clair" : formes directes, disque rouge en petale flottant
+       detache, en haut-droite du L. Mark = master util centre, scale 3.6 (~70% util). -->
+  <g transform="translate(98 209.6) scale(3.6)">
+    <!-- Disque rouge flottant detache, haut-droite du montant -->
+    <circle cx="152" cy="42" r="34" fill="#E63946"/>
+    <!-- Montant vertical bleu -->
+    <rect x="44" y="44" width="40" height="112" fill="#1E40AF"/>
+    <!-- Pied jaune incline -8deg -->
+    <g transform="rotate(-8 120 132)">
+      <rect x="84" y="112" width="72" height="44" fill="#FFD60A"/>
+    </g>
+  </g>
+</svg>
