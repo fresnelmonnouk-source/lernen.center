@@ -1,7 +1,17 @@
 import type { Session } from '@supabase/supabase-js';
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
+import { withTimeout } from '@/lib/async';
 import { supabase } from '@/lib/supabase';
+
+/**
+ * Bounds for the initial auth resolution. `getSession()` can hang while
+ * refreshing an expired token on a flaky network — without a cap the app stays
+ * on the splash forever. On timeout we treat the user as signed-out so the gate
+ * routes to login (recoverable) instead of an infinite splash.
+ */
+const SESSION_TIMEOUT_MS = 10_000;
+const PROFILE_TIMEOUT_MS = 12_000;
 
 export type Profile = {
   id: string;
@@ -27,16 +37,24 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 async function fetchProfile(userId: string): Promise<Profile | null> {
-  const { data, error } = await supabase
-    .from('user_profiles')
-    .select('id, display_name, current_level, onboarding_completed, streak_days, total_xp')
-    .eq('id', userId)
-    .maybeSingle();
-  if (error) {
-    console.warn('fetchProfile:', error.message);
-    return null;
-  }
-  return (data as Profile) ?? null;
+  // Wrapped in withTimeout so a wedged query resolves to null instead of holding
+  // the caller (and, at startup, the loading gate) open indefinitely.
+  return withTimeout(
+    (async () => {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('id, display_name, current_level, onboarding_completed, streak_days, total_xp')
+        .eq('id', userId)
+        .maybeSingle();
+      if (error) {
+        console.warn('fetchProfile:', error.message);
+        return null;
+      }
+      return (data as Profile) ?? null;
+    })(),
+    PROFILE_TIMEOUT_MS,
+    null,
+  );
 }
 
 /** Maps raw Supabase auth errors to short French messages for the UI. */
@@ -60,17 +78,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
 
-    supabase.auth.getSession().then(async ({ data }) => {
+    void (async () => {
+      // Bounded session read (see SESSION_TIMEOUT_MS): never let the splash hang.
+      const initial = await withTimeout(
+        supabase.auth.getSession().then((r) => r.data.session),
+        SESSION_TIMEOUT_MS,
+        null,
+      );
       if (!active) return;
-      setSession(data.session);
-      if (data.session) setProfile(await fetchProfile(data.session.user.id));
-      setLoading(false);
-    });
+      setSession(initial);
+      setLoading(false); // unblock the gate as soon as the session is known…
+      if (initial) {
+        // …then load the profile without gating navigation on it.
+        const next = await fetchProfile(initial.user.id);
+        if (active) setProfile(next);
+      }
+    })();
 
     const { data: sub } = supabase.auth.onAuthStateChange(async (_event, next) => {
       setSession(next);
-      setProfile(next ? await fetchProfile(next.user.id) : null);
       setLoading(false);
+      setProfile(next ? await fetchProfile(next.user.id) : null);
     });
 
     return () => {
