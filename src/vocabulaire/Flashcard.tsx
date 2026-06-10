@@ -64,7 +64,7 @@ export function Flashcard({ word, revealed, onPress, direction = 'de-fr', status
           {showDeFront ? (
             <>
               <Txt font="display" size={30} color={articleColor} tracking={-0.5} style={styles.center}>
-                {word.a ? `${word.a} ` : ''}{word.d}
+                {word.d}
               </Txt>
               {revealed ? (
                 <Txt font="serifItalic" size={22} tone="ink2" style={styles.center}>
@@ -83,7 +83,7 @@ export function Flashcard({ word, revealed, onPress, direction = 'de-fr', status
               </Txt>
               {revealed ? (
                 <Txt font="display" size={26} color={articleColor} tracking={-0.5} style={styles.center}>
-                  {word.a ? `${word.a} ` : ''}{word.d}
+                  {word.d}
                 </Txt>
               ) : (
                 <Txt font="monoBold" size={10} tone="ink2" uppercase tracking={1.5} style={styles.center}>
