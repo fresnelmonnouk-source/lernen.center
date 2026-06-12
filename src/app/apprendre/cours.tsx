@@ -1,5 +1,6 @@
+import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
 import { Chip } from '@/components/ui/Chip';
@@ -171,6 +172,14 @@ export default function CoursScreen() {
 
   return (
     <ScreenScaffold eyebrow="APPRENDRE" title="Cours" accent="IA">
+      <Link href="/apprendre/historique" asChild>
+        <Pressable accessibilityRole="link" hitSlop={8} style={styles.historyLink}>
+          <Txt font="monoBold" size={11} color={Accent.purple} uppercase tracking={1}>
+            → Mes cours générés
+          </Txt>
+        </Pressable>
+      </Link>
+
       <View style={styles.group}>
         <Txt font="monoBold" size={10} tone="ink2" uppercase tracking={1.5}>Catégorie</Txt>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
@@ -238,6 +247,7 @@ export default function CoursScreen() {
 }
 
 const styles = StyleSheet.create({
+  historyLink: { alignSelf: 'flex-start' },
   group: { gap: Spacing.two },
   row: { gap: Spacing.two, paddingRight: Spacing.four },
   wrapRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
