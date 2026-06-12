@@ -200,6 +200,49 @@ export type GradeCourseExamResponse = {
   meta?: unknown;
 };
 
+// ── Historique des cours ─────────────────────────────────────────────────────
+
+/** Une ligne de la liste d'historique. `course_data` est omis ici (chargé à la demande via getCourse). */
+export type CourseHistoryItem = {
+  id: string;
+  title: string;
+  topic: string;
+  category: CourseCategory;
+  level: Level;
+  format: CourseFormat;
+  exam_completed: boolean;
+  /** Score du mini-examen sur 100. null tant que l'examen n'a pas été passé. */
+  exam_score: number | null;
+  created_at: string;
+  completed_at: string | null;
+};
+
+export type CourseHistoryStats = {
+  total: number;
+  completed: number;
+  /** Moyenne des scores d'examen (sur 100). null si aucun examen passé. */
+  average_score: number | null;
+};
+
+export type CourseHistoryListResponse = {
+  success: true;
+  courses: CourseHistoryItem[];
+  stats: CourseHistoryStats;
+};
+
+/** Filtres optionnels de la liste (tous facultatifs). */
+export type CourseHistoryQuery = { limit?: number; category?: CourseCategory; level?: Level };
+
+/** Détail complet d'un cours sauvegardé : la colonne `course_data` porte l'objet Course intégral. */
+export type CourseHistoryDetail = CourseHistoryItem & {
+  user_id: string;
+  course_data: Course;
+  exam_data: unknown | null;
+};
+export type CourseHistoryDetailResponse = { success: true; course: CourseHistoryDetail };
+
+export type DeleteCourseResponse = { success: true; deleted: string };
+
 // ── Certification Goethe ─────────────────────────────────────────────────────
 
 export type CertLesenRequest = { level: Level; part: number };

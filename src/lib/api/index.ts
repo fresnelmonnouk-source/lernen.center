@@ -20,8 +20,12 @@ import type {
   ConjugateResponse,
   CorrectSentenceRequest,
   CorrectSentenceResponse,
+  CourseHistoryDetailResponse,
+  CourseHistoryListResponse,
+  CourseHistoryQuery,
   CourseSuggestionsRequest,
   CourseSuggestionsResponse,
+  DeleteCourseResponse,
   GenerateCourseRequest,
   GenerateCourseResponse,
   GenerateExerciseRequest,
@@ -35,6 +39,13 @@ import type {
   GradeTestRequest,
   GradeTestResponse,
 } from './types';
+
+/** Sérialise des paramètres optionnels en query string (les valeurs vides/undefined sont ignorées). */
+function buildQuery(params: Record<string, string | number | undefined>): string {
+  const entries = Object.entries(params).filter(([, v]) => v !== undefined && v !== '');
+  if (entries.length === 0) return '';
+  return '?' + entries.map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`).join('&');
+}
 
 /** RGPD — export de données (art. 20). */
 export type UserDataExport = {
@@ -76,6 +87,14 @@ export const api = {
     apiGet<CourseSuggestionsResponse>(`/api/course-suggestions?level=${q.level}&category=${q.category}`, { auth: false }),
   generateCourse: (body: GenerateCourseRequest) => apiPost<GenerateCourseResponse>('/api/generate-course', body),
   gradeCourseExam: (body: GradeCourseExamRequest) => apiPost<GradeCourseExamResponse>('/api/grade-course-exam', body),
+
+  // Historique des cours (course_history)
+  courseHistory: (q?: CourseHistoryQuery) =>
+    apiGet<CourseHistoryListResponse>(`/api/course-history${buildQuery({ ...q })}`),
+  getCourse: (id: string) =>
+    apiGet<CourseHistoryDetailResponse>(`/api/course-history${buildQuery({ id })}`),
+  deleteCourse: (id: string) =>
+    apiDelete<DeleteCourseResponse>(`/api/course-history${buildQuery({ id })}`),
 
   // Certification Goethe
   certLesen: (body: CertLesenRequest) => apiPost<CertLesenResponse>('/api/cert-lesen', body),

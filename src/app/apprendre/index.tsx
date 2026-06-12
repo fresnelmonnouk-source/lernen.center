@@ -22,6 +22,13 @@ export default function ApprendreScreen() {
             color: Accent.green,
             href: '/apprendre/decouvrir',
           },
+          {
+            mark: 'H',
+            title: 'Historique',
+            subtitle: 'TES COURS PASSÉS · SCORES',
+            color: Accent.purple,
+            href: '/apprendre/historique',
+          },
         ]}
       />
     </ScreenScaffold>

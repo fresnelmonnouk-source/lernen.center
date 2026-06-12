@@ -128,6 +128,7 @@ function RootNavigator() {
         {/* APPRENDRE */}
         <Stack.Screen name="apprendre/index" options={{ title: 'APPRENDRE' }} />
         <Stack.Screen name="apprendre/cours" options={{ title: 'COURS' }} />
+        <Stack.Screen name="apprendre/historique" options={{ title: 'HISTORIQUE' }} />
         <Stack.Screen name="apprendre/decouvrir/index" options={{ title: 'DÉCOUVRIR' }} />
         <Stack.Screen name="apprendre/decouvrir/vocabulaire" options={{ title: 'VOCABULAIRE' }} />
         <Stack.Screen name="apprendre/decouvrir/conjugaison" options={{ title: 'CONJUGAISON' }} />
