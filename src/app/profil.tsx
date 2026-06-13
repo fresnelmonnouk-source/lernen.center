@@ -131,13 +131,11 @@ export default function ProfilScreen() {
         onPress={exportData}
         loading={exporting}
         color={Accent.blue}
-        textColor={colors.paper}
       />
       <ButtonPrimary
         label="Supprimer mon compte"
         onPress={() => setShowDelete(true)}
         color={Accent.red}
-        textColor={colors.paper}
       />
 
       {/* Légal */}

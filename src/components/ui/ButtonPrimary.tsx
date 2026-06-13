@@ -4,7 +4,7 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { Icon, type IconName } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
-import { Border, Shadow, Spacing } from '@/theme/tokens';
+import { accentForeground, Border, Shadow, Spacing } from '@/theme/tokens';
 
 type Props = {
   label: string;
@@ -28,7 +28,11 @@ export function ButtonPrimary({ label, onPress, disabled, loading, color, textCo
   const offset = Shadow.md;
   const isDisabled = disabled || loading;
   const bg = color ?? colors.ink;
-  const fg = textColor ?? colors.cream;
+  // Sur un fond ACCENT fixe (color fourni) le texte suit la règle a11y figée
+  // (noir sur yellow, cream sinon), indépendante du thème — sinon `colors.cream`
+  // devient sombre en dark → texte sombre sur purple/blue = illisible. Sur le fond
+  // ink par défaut, on garde l'opposé du thème (colors.cream).
+  const fg = textColor ?? (color ? accentForeground(color) : colors.cream);
 
   return (
     <Pressable

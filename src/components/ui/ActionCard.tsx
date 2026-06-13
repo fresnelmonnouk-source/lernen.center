@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Icon } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
-import { Border, Shadow, Spacing } from '@/theme/tokens';
+import { accentForeground, Border, Shadow, Spacing } from '@/theme/tokens';
 
 type Props = {
   /** Oversized index, e.g. "01". */
@@ -27,7 +27,10 @@ export function ActionCard({ number, title, color, href, foreground }: Props) {
   const { colors } = useTheme();
   const [pressed, setPressed] = useState(false);
   const offset = Shadow.lg;
-  const fg = foreground ?? colors.ink;
+  // Le fond est une couleur accent FIXE → le texte/icône suit la règle a11y figée
+  // (noir absolu sur yellow, cream absolu sur les autres), jamais colors.ink/paper
+  // (qui s'inversent en dark → cream sur yellow = 1.4:1 illisible).
+  const fg = foreground ?? accentForeground(color);
 
   return (
     <Link href={href} asChild>
