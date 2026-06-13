@@ -30,7 +30,9 @@ export function HeroCard({ eyebrow, value, total, label, labelAccent }: Props) {
       <View style={[styles.shadow, { backgroundColor: colors.ink }]} />
       <View style={[styles.hero, { backgroundColor: colors.ink, borderColor: colors.ink }]}>
         <View style={[styles.circle, { backgroundColor: Accent.red }]} />
-        <View style={[styles.square, { backgroundColor: Accent.yellow }]} />
+        {/* Carré déco en BLEU (pas yellow) : l'accent jaune du label peut passer
+            par-dessus → jaune-sur-jaune illisible. Bleu = lisible + 3 primaires Bauhaus. */}
+        <View style={[styles.square, { backgroundColor: Accent.blue }]} />
 
         <View style={styles.content}>
           <View style={[styles.eyebrowChip, { backgroundColor: cream, borderColor: cream }]}>
