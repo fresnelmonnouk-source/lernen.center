@@ -27,7 +27,7 @@ import { Accent } from '@/theme/tokens';
  * deterministic and seekable, exactly like the web reference.
  *
  * Choreography: tile pops in → mark assembles (blue shaft → red corner → yellow
- * foot, easeOutBack snap) → 6-letter LERNEN cascade + "my"/".de" pop → tagline fade →
+ * foot, easeOutBack snap) → "my" prefix + 6-letter LERNEN cascade → tagline fade →
  * loading bar fills → whole group fades to cream and the loop restarts. The grid
  * and decor live OUTSIDE the fading group (permanent, gentle parallax).
  *
@@ -140,13 +140,12 @@ export function BrandSplash() {
           <AnimatedMark size={markSize} tile={isDark} clock={clock} />
           <View style={{ height: markSize * 0.22 }} />
 
-          {/* Wordmark: "my" pop + per-letter cascade + ".de" pop (my & .de framing LERNEN). */}
+          {/* Wordmark « myLERNEN » : "my" prefix pop + per-letter LERNEN cascade (pas de ".de" : logo seul). */}
           <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
-            <Affix text="my" origin="100% 100%" size={wordSize} clock={clock} />
+            <Affix text="my" origin="100% 100%" size={wordSize} scale={0.85} clock={clock} />
             {(['L', 'E', 'R', 'N', 'E', 'N'] as const).map((c, i) => (
               <Letter key={i} char={c} index={i} size={wordSize} clock={clock} color={colors.ink} />
             ))}
-            <Affix text=".de" origin="0% 100%" size={wordSize} clock={clock} />
           </View>
 
           <View style={{ height: 14 }} />
@@ -290,17 +289,19 @@ function Letter({
   );
 }
 
-/** « my » / « .de » affix: same beat (scale 0.4→1, easeOutBack), framing LERNEN.
- *  `origin` = transform-origin (".de" pops from bottom-left, "my" mirrored bottom-right). */
+/** Affix serif italic rouge (le « my » du wordmark) : pop (scale 0.4→1, easeOutBack).
+ *  `origin` = transform-origin du pop ; `scale` = taille relative au wordmark. */
 function Affix({
   text,
   origin,
   size,
+  scale = 0.7,
   clock,
 }: {
   text: string;
   origin: string;
   size: number;
+  scale?: number;
   clock: SharedValue<number>;
 }) {
   const style = useAnimatedStyle(() => {
@@ -309,7 +310,7 @@ function Affix({
   });
   return (
     <Animated.View style={[{ transformOrigin: origin }, style]}>
-      <Txt font="serifItalic" size={size * 0.7} color={Accent.red} tracking={-0.5}>
+      <Txt font="serifItalic" size={size * scale} color={Accent.red} tracking={-0.5}>
         {text}
       </Txt>
     </Animated.View>
