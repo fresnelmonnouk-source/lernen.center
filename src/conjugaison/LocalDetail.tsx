@@ -67,7 +67,7 @@ export function LocalDetail({ verb, onBack }: Props) {
         </Txt>
       </HardShadowBox>
 
-      <ButtonPrimary label="← Retour à la liste" onPress={onBack} color={Accent.blue} />
+      <ButtonPrimary label="Retour à la liste" icon="arrowLeft" iconPosition="left" onPress={onBack} color={Accent.blue} />
     </View>
   );
 }

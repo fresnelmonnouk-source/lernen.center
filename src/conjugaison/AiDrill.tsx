@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
 import { Chip } from '@/components/ui/Chip';
 import { HardShadowBox } from '@/components/ui/HardShadowBox';
+import { Icon } from '@/components/ui/Icon';
 import { Input } from '@/components/ui/Input';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
@@ -185,9 +186,12 @@ export function AiDrill() {
                   error={isKo ? expected[i] : undefined}
                 />
                 {isOk ? (
-                  <Txt font="monoBold" size={11} color={Accent.green} uppercase tracking={1.2}>
-                    ✓ correct
-                  </Txt>
+                  <View style={styles.okRow}>
+                    <Icon name="check" size="sm" color={Accent.green} />
+                    <Txt font="monoBold" size={11} color={Accent.green} uppercase tracking={1.2}>
+                      correct
+                    </Txt>
+                  </View>
                 ) : null}
               </View>
             </View>
@@ -249,6 +253,7 @@ const styles = StyleSheet.create({
   formRow: { flexDirection: 'row', gap: Spacing.two, alignItems: 'flex-start' },
   formPerson: { width: 72, paddingTop: Spacing.three + 4 },
   formInputCol: { flex: 1, gap: 2 },
+  okRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   notes: { padding: Spacing.three, gap: Spacing.two },
   summary: {
     padding: Spacing.three,

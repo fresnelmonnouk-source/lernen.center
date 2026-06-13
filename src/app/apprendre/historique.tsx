@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
 import { HardShadowBox } from '@/components/ui/HardShadowBox';
+import { Icon } from '@/components/ui/Icon';
 import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
 import { StatGrid } from '@/components/ui/Stat';
 import { Txt } from '@/components/ui/Txt';
@@ -430,10 +431,11 @@ function CourseRow({ item, opening, deleting, confirming, onOpen, onAskDelete, o
               disabled={busy}
               onPress={onOpen}
               hitSlop={8}
-              style={styles.footerBtn}>
+              style={[styles.footerBtn, styles.footerBtnRow]}>
               <Txt font="monoBold" size={11} color={Accent.blue} uppercase tracking={0.8}>
-                Ouvrir →
+                Ouvrir
               </Txt>
+              <Icon name="arrowRight" size="sm" color={Accent.blue} />
             </Pressable>
             <View style={styles.flex} />
             <Pressable
@@ -470,5 +472,6 @@ const styles = StyleSheet.create({
   footer: { borderTopWidth: Border.thin, paddingTop: Spacing.two, paddingHorizontal: Spacing.three, paddingBottom: Spacing.two },
   confirmRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.three },
   footerBtn: { paddingVertical: Spacing.one },
+  footerBtnRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   flex: { flex: 1 },
 });

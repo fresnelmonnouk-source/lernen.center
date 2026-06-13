@@ -96,7 +96,7 @@ export function WriteRunner({ words, onComplete }: Props) {
       ) : null}
 
       {checked ? (
-        <ButtonPrimary label={isLast ? 'Voir le score' : 'Suivant ›'} onPress={next} />
+        <ButtonPrimary label={isLast ? 'Voir le score' : 'Suivant'} icon={isLast ? undefined : 'chevronRight'} onPress={next} />
       ) : (
         <ButtonPrimary label="Vérifier" onPress={verify} disabled={!input.trim()} color={Accent.blue} />
       )}

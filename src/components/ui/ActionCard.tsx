@@ -2,9 +2,10 @@ import { Link, type Href } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { Icon } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
-import { Border, Fonts, Shadow, Spacing } from '@/theme/tokens';
+import { Border, Shadow, Spacing } from '@/theme/tokens';
 
 type Props = {
   /** Oversized index, e.g. "01". */
@@ -41,9 +42,9 @@ export function ActionCard({ number, title, color, href, foreground }: Props) {
             { backgroundColor: color, borderColor: colors.ink },
             pressed && { transform: [{ translateX: offset - 1 }, { translateY: offset - 1 }] },
           ]}>
-          <Txt font="display" size={20} color={fg} style={styles.arrow}>
-            ↗
-          </Txt>
+          <View style={styles.arrow}>
+            <Icon name="arrowUpRight" size="md" color={fg} />
+          </View>
           <Txt font="display" size={56} color={fg} tracking={-2} lineHeight={52}>
             {number}
           </Txt>
@@ -71,7 +72,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: Spacing.three,
     right: Spacing.three,
-    fontFamily: Fonts.display,
   },
   title: {
     marginTop: Spacing.three,

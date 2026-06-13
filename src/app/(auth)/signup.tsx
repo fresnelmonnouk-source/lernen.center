@@ -1,11 +1,12 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useAuth } from '@/auth/auth-context';
 import { AuthScaffold } from '@/components/ui/AuthScaffold';
 import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
 import { HardShadowBox } from '@/components/ui/HardShadowBox';
+import { Icon } from '@/components/ui/Icon';
 import { Input } from '@/components/ui/Input';
 import { Txt } from '@/components/ui/Txt';
 import { Accent, Spacing } from '@/theme/tokens';
@@ -49,10 +50,13 @@ export default function SignupScreen() {
             Clique sur le lien qu&apos;on vient d&apos;envoyer à {email.trim()} pour activer ton compte, puis connecte-toi.
           </Txt>
         </HardShadowBox>
-        <Link href="/login" replace>
-          <Txt font="bold" size={13} color={Accent.red}>
-            ← Retour à la connexion
-          </Txt>
+        <Link href="/login" replace asChild>
+          <Pressable style={styles.backLink} accessibilityRole="link">
+            <Icon name="arrowLeft" size="sm" color={Accent.red} />
+            <Txt font="bold" size={13} color={Accent.red}>
+              Retour à la connexion
+            </Txt>
+          </Pressable>
         </Link>
       </AuthScaffold>
     );
@@ -100,5 +104,6 @@ export default function SignupScreen() {
 
 const styles = StyleSheet.create({
   box: { padding: Spacing.four, gap: Spacing.two },
+  backLink: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   footer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', marginTop: Spacing.one },
 });

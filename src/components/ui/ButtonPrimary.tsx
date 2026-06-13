@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
+import { Icon, type IconName } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Border, Shadow, Spacing } from '@/theme/tokens';
@@ -15,10 +16,13 @@ type Props = {
   color?: string;
   /** Label color. Defaults to theme cream. */
   textColor?: string;
+  /** Optional leading/trailing icon (same color as the label). */
+  icon?: IconName;
+  iconPosition?: 'left' | 'right';
 };
 
 /** Full-width brutalist primary button (`.btn-primary`). */
-export function ButtonPrimary({ label, onPress, disabled, loading, color, textColor }: Props) {
+export function ButtonPrimary({ label, onPress, disabled, loading, color, textColor, icon, iconPosition = 'right' }: Props) {
   const { colors } = useTheme();
   const [pressed, setPressed] = useState(false);
   const offset = Shadow.md;
@@ -44,9 +48,13 @@ export function ButtonPrimary({ label, onPress, disabled, loading, color, textCo
         {loading ? (
           <ActivityIndicator color={fg} />
         ) : (
-          <Txt font="display" size={14} color={fg} uppercase tracking={0.6}>
-            {label}
-          </Txt>
+          <View style={styles.content}>
+            {icon && iconPosition === 'left' ? <Icon name={icon} size="sm" color={fg} /> : null}
+            <Txt font="display" size={14} color={fg} uppercase tracking={0.6}>
+              {label}
+            </Txt>
+            {icon && iconPosition === 'right' ? <Icon name={icon} size="sm" color={fg} /> : null}
+          </View>
         )}
       </View>
     </Pressable>
@@ -67,4 +75,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
 });
+

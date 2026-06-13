@@ -2,9 +2,10 @@ import { Link, type Href } from 'expo-router';
 import { Fragment } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { Icon } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
-import { Accent, Border, Shadow, Spacing } from '@/theme/tokens';
+import { accentForeground, Border, Shadow, Spacing } from '@/theme/tokens';
 
 export type MenuItem = {
   /** Letter or short glyph for the colored square marker. */
@@ -44,7 +45,7 @@ function Row({ item }: { item: MenuItem }) {
   const markColor = item.color ?? colors.ink;
   // Hardcodes volontaires : les accents (red/blue/green/yellow) sont fixes peu
   // importe le thème, donc le texte du marker doit l'être aussi (contraste).
-  const markText = markColor === Accent.yellow ? '#0A0A0A' : '#F4F0E6';
+  const markText = accentForeground(markColor);
 
   return (
     <View style={[styles.row, item.locked && styles.rowLocked]}>
@@ -65,9 +66,7 @@ function Row({ item }: { item: MenuItem }) {
             </Txt>
           ) : null}
         </View>
-        <Txt font="display" size={22}>
-          {item.locked ? '—' : '→'}
-        </Txt>
+        <Icon name={item.locked ? 'lock' : 'arrowRight'} size="md" />
       </View>
     </View>
   );

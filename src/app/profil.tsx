@@ -3,6 +3,7 @@ import { Alert, Pressable, Share, StyleSheet, View } from 'react-native';
 
 import { useAuth } from '@/auth/auth-context';
 import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
+import { Icon } from '@/components/ui/Icon';
 import { Input } from '@/components/ui/Input';
 import { MenuList } from '@/components/ui/MenuList';
 import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
@@ -111,9 +112,12 @@ export default function ProfilScreen() {
         </Txt>
       ) : null}
       {saved && !dirty ? (
-        <Txt font="mono" size={11} color={Accent.green} uppercase tracking={0.5}>
-          ✓ Enregistré.
-        </Txt>
+        <View style={styles.savedRow}>
+          <Icon name="check" size="sm" color={Accent.green} />
+          <Txt font="mono" size={11} color={Accent.green} uppercase tracking={0.5}>
+            Enregistré.
+          </Txt>
+        </View>
       ) : null}
       <ButtonPrimary label="Enregistrer" onPress={save} loading={saving} disabled={!dirty} />
 
@@ -227,6 +231,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   section: { marginTop: Spacing.two },
+  savedRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   levels: {
     flexDirection: 'row',
     flexWrap: 'wrap',

@@ -1,6 +1,7 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { HardShadowBox } from '@/components/ui/HardShadowBox';
+import { Icon } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Accent, Border, LevelColor, Shadow, Spacing } from '@/theme/tokens';
@@ -49,16 +50,12 @@ export function LocalLookup({ verbs, onPick }: Props) {
               <Tag label={`Aux. ${v.x}`} color={Accent.blue} />
               {v.s ? <Tag label="Séparable" color={Accent.yellow} dark /> : null}
             </View>
-            <Txt
-              font="monoBold"
-              size={10}
-              color={Accent.blue}
-              uppercase
-              tracking={1.2}
-              style={styles.cta}
-              onPress={() => onPick(v)}>
-              Voir conjugaisons →
-            </Txt>
+            <Pressable style={styles.cta} onPress={() => onPick(v)} accessibilityRole="button" hitSlop={6}>
+              <Txt font="monoBold" size={10} color={Accent.blue} uppercase tracking={1.2}>
+                Voir conjugaisons
+              </Txt>
+              <Icon name="arrowRight" size="sm" color={Accent.blue} />
+            </Pressable>
           </HardShadowBox>
         );
       })}
@@ -85,5 +82,5 @@ const styles = StyleSheet.create({
   levelChip: { borderWidth: Border.base, paddingVertical: 2, paddingHorizontal: Spacing.two },
   tagsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
   tag: { borderWidth: Border.thin, paddingVertical: 3, paddingHorizontal: Spacing.two },
-  cta: { marginTop: 2 },
+  cta: { flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'flex-start', marginTop: 2 },
 });

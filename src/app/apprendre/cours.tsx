@@ -4,6 +4,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
 import { Chip } from '@/components/ui/Chip';
+import { Icon } from '@/components/ui/Icon';
 import { Input } from '@/components/ui/Input';
 import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
 import { Txt } from '@/components/ui/Txt';
@@ -174,8 +175,9 @@ export default function CoursScreen() {
     <ScreenScaffold eyebrow="APPRENDRE" title="Cours" accent="IA">
       <Link href="/apprendre/historique" asChild>
         <Pressable accessibilityRole="link" hitSlop={8} style={styles.historyLink}>
+          <Icon name="arrowRight" size="sm" color={Accent.purple} />
           <Txt font="monoBold" size={11} color={Accent.purple} uppercase tracking={1}>
-            → Mes cours générés
+            Mes cours générés
           </Txt>
         </Pressable>
       </Link>
@@ -247,7 +249,7 @@ export default function CoursScreen() {
 }
 
 const styles = StyleSheet.create({
-  historyLink: { alignSelf: 'flex-start' },
+  historyLink: { flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'flex-start' },
   group: { gap: Spacing.two },
   row: { gap: Spacing.two, paddingRight: Spacing.four },
   wrapRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
