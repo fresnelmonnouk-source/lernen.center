@@ -158,7 +158,7 @@ export default function ProfilScreen() {
           {COPY.aiDisclaimer}
         </Txt>
         <Txt font="mono" size={10} tone="ink2" uppercase tracking={1}>
-          {`Lernen.de · ${APP_VERSION}`}
+          {`mylernen.de · ${APP_VERSION}`}
         </Txt>
       </View>
 

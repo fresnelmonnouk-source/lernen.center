@@ -4,7 +4,7 @@ import { ScreenScaffold } from '@/components/ui/ScreenScaffold';
 import { Txt } from '@/components/ui/Txt';
 import { Accent, Spacing } from '@/theme/tokens';
 
-const CONTACT = 'privacy@lernen.de';
+const CONTACT = 'privacy@mylernen.de';
 
 /**
  * Écran de transparence légale (in-app, pas de page 404).

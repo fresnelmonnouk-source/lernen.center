@@ -27,7 +27,7 @@ import { Accent } from '@/theme/tokens';
  * deterministic and seekable, exactly like the web reference.
  *
  * Choreography: tile pops in → mark assembles (blue shaft → red corner → yellow
- * foot, easeOutBack snap) → 6-letter LERNEN cascade + ".de" pop → tagline fade →
+ * foot, easeOutBack snap) → 6-letter LERNEN cascade + "my"/".de" pop → tagline fade →
  * loading bar fills → whole group fades to cream and the loop restarts. The grid
  * and decor live OUTSIDE the fading group (permanent, gentle parallax).
  *
@@ -140,12 +140,13 @@ export function BrandSplash() {
           <AnimatedMark size={markSize} tile={isDark} clock={clock} />
           <View style={{ height: markSize * 0.22 }} />
 
-          {/* Wordmark: per-letter cascade + ".de" pop. */}
+          {/* Wordmark: "my" pop + per-letter cascade + ".de" pop (my & .de framing LERNEN). */}
           <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
+            <Affix text="my" origin="100% 100%" size={wordSize} clock={clock} />
             {(['L', 'E', 'R', 'N', 'E', 'N'] as const).map((c, i) => (
               <Letter key={i} char={c} index={i} size={wordSize} clock={clock} color={colors.ink} />
             ))}
-            <Suffix size={wordSize} clock={clock} />
+            <Affix text=".de" origin="0% 100%" size={wordSize} clock={clock} />
           </View>
 
           <View style={{ height: 14 }} />
@@ -289,16 +290,27 @@ function Letter({
   );
 }
 
-/** ".de" suffix: pops last (scale 0.4→1, easeOutBack) from its bottom-left. */
-function Suffix({ size, clock }: { size: number; clock: SharedValue<number> }) {
+/** « my » / « .de » affix: same beat (scale 0.4→1, easeOutBack), framing LERNEN.
+ *  `origin` = transform-origin (".de" pops from bottom-left, "my" mirrored bottom-right). */
+function Affix({
+  text,
+  origin,
+  size,
+  clock,
+}: {
+  text: string;
+  origin: string;
+  size: number;
+  clock: SharedValue<number>;
+}) {
   const style = useAnimatedStyle(() => {
     const p = eOutBack(clampSeg(clock.value, 1.88, 2.18));
     return { opacity: p, transform: [{ scale: 0.4 + 0.6 * p }] };
   });
   return (
-    <Animated.View style={[{ transformOrigin: '0% 100%' }, style]}>
+    <Animated.View style={[{ transformOrigin: origin }, style]}>
       <Txt font="serifItalic" size={size * 0.7} color={Accent.red} tracking={-0.5}>
-        .de
+        {text}
       </Txt>
     </Animated.View>
   );
