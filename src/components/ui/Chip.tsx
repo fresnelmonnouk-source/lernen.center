@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'rea
 
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
-import { Border, Shadow, Spacing } from '@/theme/tokens';
+import { accentForeground, Border, Shadow, Spacing } from '@/theme/tokens';
 
 type Props = {
   label: string;
@@ -24,7 +24,11 @@ type Props = {
 export function Chip({ label, sublabel, selected, onPress, color, fullWidth, style }: Props) {
   const { colors } = useTheme();
   const fill = color ?? colors.ink;
-  const fg = selected ? colors.cream : colors.ink;
+  // Texte d'une chip sélectionnée : sur un fond ACCENT fixe, suit la règle a11y
+  // figée (noir sur yellow, cream sinon) ; sur le fill par défaut (ink, qui s'inverse
+  // avec le thème) → l'opposé du thème (colors.cream). Évite cream-sur-yellow (clair)
+  // et texte-sombre-sur-accent (dark). Non sélectionnée : ink sur paper neutre.
+  const fg = selected ? (color ? accentForeground(color) : colors.cream) : colors.ink;
 
   return (
     <Pressable

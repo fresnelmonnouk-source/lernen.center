@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { HardShadowBox } from '@/components/ui/HardShadowBox';
+import { Icon, type IconName } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Accent, ArticleColor, Border, LevelColor, Shadow, Spacing } from '@/theme/tokens';
@@ -98,13 +99,15 @@ export function Flashcard({ word, revealed, onPress, direction = 'de-fr', status
       {revealed && onSetStatus ? (
         <View style={styles.statusRow}>
           <StatusButton
-            label="✓ Connu"
+            icon="check"
+            label="Connu"
             color={Accent.green}
             active={status === 'known'}
             onPress={() => onSetStatus(status === 'known' ? null : 'known')}
           />
           <StatusButton
-            label="↺ À revoir"
+            icon="rotateCcw"
+            label="À revoir"
             color={Accent.red}
             active={status === 'review'}
             onPress={() => onSetStatus(status === 'review' ? null : 'review')}
@@ -127,17 +130,20 @@ function StatusBadge({ label, color }: { label: string; color: string }) {
 }
 
 function StatusButton({
+  icon,
   label,
   color,
   active,
   onPress,
 }: {
+  icon: IconName;
   label: string;
   color: string;
   active: boolean;
   onPress: () => void;
 }) {
   const { colors } = useTheme();
+  const fg = active ? '#FFFFFF' : colors.ink;
   return (
     <Pressable
       accessibilityRole="button"
@@ -155,7 +161,8 @@ function StatusButton({
           styles.statusBtn,
           { backgroundColor: active ? color : colors.paper, borderColor: colors.ink },
         ]}>
-        <Txt font="monoBold" size={11} color={active ? '#FFFFFF' : colors.ink} uppercase tracking={0.5}>
+        <Icon name={icon} size="sm" color={fg} />
+        <Txt font="monoBold" size={11} color={fg} uppercase tracking={0.5}>
           {label}
         </Txt>
       </View>
@@ -186,9 +193,12 @@ const styles = StyleSheet.create({
   statusRow: { flexDirection: 'row', gap: Spacing.two },
   statusBtnWrap: { flex: 1, position: 'relative' },
   statusBtn: {
+    flexDirection: 'row',
     borderWidth: Border.base,
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.two,
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
   },
 });

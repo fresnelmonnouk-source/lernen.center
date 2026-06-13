@@ -184,10 +184,10 @@ export default function VocabulaireScreen() {
           />
           <View style={styles.nav}>
             <View style={styles.navBtn}>
-              <ButtonPrimary label="‹ Préc." onPress={() => go(-1)} />
+              <ButtonPrimary label="Préc." icon="chevronLeft" iconPosition="left" onPress={() => go(-1)} />
             </View>
             <View style={styles.navBtn}>
-              <ButtonPrimary label="Suiv. ›" onPress={() => go(1)} />
+              <ButtonPrimary label="Suiv." icon="chevronRight" iconPosition="right" onPress={() => go(1)} />
             </View>
           </View>
           <ButtonPrimary label="Mélanger" onPress={shuffle} color={Accent.yellow} textColor="#0A0A0A" />

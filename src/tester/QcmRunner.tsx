@@ -89,7 +89,11 @@ export function QcmRunner({ questions, onComplete }: Props) {
       </View>
 
       {selected !== null ? (
-        <ButtonPrimary label={isLast ? 'Voir le score' : 'Suivant ›'} onPress={next} />
+        <ButtonPrimary
+          label={isLast ? 'Voir le score' : 'Suivant'}
+          icon={isLast ? undefined : 'chevronRight'}
+          onPress={next}
+        />
       ) : null}
     </View>
   );

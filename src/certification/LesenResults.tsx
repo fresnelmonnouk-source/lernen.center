@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { HardShadowBox } from '@/components/ui/HardShadowBox';
+import { Icon } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Accent, Border, Shadow, Spacing } from '@/theme/tokens';
@@ -74,8 +75,9 @@ function QuestionReview({
     <HardShadowBox background={colors.cream2} offset={Shadow.sm} contentStyle={styles.qCard}>
       <View style={styles.qHead}>
         <View style={[styles.badge, { backgroundColor: accent, borderColor: colors.ink }]}>
+          <Icon name={isCorrect ? 'check' : 'x'} size="sm" color="#FFFFFF" />
           <Txt font="monoBold" size={11} color="#FFFFFF" uppercase tracking={0.5}>
-            {isCorrect ? '✓' : '✗'} Q{index + 1}
+            Q{index + 1}
           </Txt>
         </View>
         <Txt font="bold" size={14} lineHeight={20} style={styles.qPrompt}>
@@ -124,6 +126,6 @@ const styles = StyleSheet.create({
   qCard: { padding: Spacing.three, gap: Spacing.two },
   qHead: { flexDirection: 'row', gap: Spacing.two, alignItems: 'flex-start' },
   qPrompt: { flex: 1 },
-  badge: { borderWidth: Border.thin, paddingHorizontal: Spacing.two, paddingVertical: 2 },
+  badge: { flexDirection: 'row', alignItems: 'center', gap: 4, borderWidth: Border.thin, paddingHorizontal: Spacing.two, paddingVertical: 3 },
   row: { gap: 2 },
 });

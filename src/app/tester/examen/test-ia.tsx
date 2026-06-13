@@ -33,7 +33,7 @@ const DIFFICULTIES: { key: Difficulty; label: string }[] = [
   { key: 'medium', label: 'Moyen' },
   { key: 'hard', label: 'Difficile' },
 ];
-const COUNTS = [5, 10, 15];
+const COUNTS = [10, 15, 20];
 
 export default function TestIaScreen() {
   const [phase, setPhase] = useState<Phase>('setup');

@@ -97,3 +97,19 @@ export const Spacing = {
 
 /** Max content width (the reference app is a 480px centered column). */
 export const MaxContentWidth = 480;
+
+/** Icon system (lucide-react-native via the `Icon` wrapper). Sizes in px. */
+export const IconSize = { sm: 18, md: 20, lg: 24 } as const;
+
+/** Stroke per size — keeps the line optically constant, never clogged at small px.
+ *  `lg` matches Border.base (2.5). Larger px = heavier stroke, brutalist-consistent. */
+export const IconStroke = { sm: 2, md: 2.25, lg: 2.5 } as const;
+
+/**
+ * Foreground (text + icon) color on an Accent background — the FROZEN a11y rule.
+ * Yellow → absolute black ; red/blue/green/purple → absolute cream. Theme-independent.
+ * Single source of truth, consumed by MenuList, markers, Icon, Stat, etc.
+ */
+export function accentForeground(bg: string): string {
+  return bg === Accent.yellow ? '#0A0A0A' : '#F4F0E6';
+}

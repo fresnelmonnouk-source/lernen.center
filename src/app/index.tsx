@@ -63,7 +63,7 @@ export default function HomeScreen() {
             <SectionHeader title="Que veux-tu" accent="faire ?" />
             <View style={styles.actions}>
               <ActionCard number="01" title="Apprendre" color={Accent.yellow} href="/apprendre" />
-              <ActionCard number="02" title="Tester" color={Accent.red} foreground={colors.paper} href="/tester" />
+              <ActionCard number="02" title="Tester" color={Accent.red} href="/tester" />
             </View>
 
             <Pressable onPress={signOut} style={styles.logout} accessibilityRole="button" accessibilityLabel="Se déconnecter">

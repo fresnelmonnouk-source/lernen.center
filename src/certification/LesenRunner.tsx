@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ButtonPrimary } from '@/components/ui/ButtonPrimary';
 import { HardShadowBox } from '@/components/ui/HardShadowBox';
+import { Icon } from '@/components/ui/Icon';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
 import { Accent, Border, Shadow, Spacing } from '@/theme/tokens';
@@ -87,10 +88,10 @@ export function LesenRunner({ test, submitting, onSubmit }: Props) {
 
       <View style={styles.nav}>
         <View style={styles.navBtn}>
-          <ButtonPrimary label="‹ Préc." onPress={() => setIndex((n) => n - 1)} disabled={index === 0} />
+          <ButtonPrimary label="Préc." icon="chevronLeft" iconPosition="left" onPress={() => setIndex((n) => n - 1)} disabled={index === 0} />
         </View>
         <View style={styles.navBtn}>
-          <ButtonPrimary label="Suiv. ›" onPress={() => setIndex((n) => n + 1)} disabled={isLast} />
+          <ButtonPrimary label="Suiv." icon="chevronRight" iconPosition="right" onPress={() => setIndex((n) => n + 1)} disabled={isLast} />
         </View>
       </View>
 
@@ -121,9 +122,7 @@ function TextCard({
         <Txt font="monoBold" size={11} tone="ink2" uppercase tracking={1.2} style={styles.textTitle}>
           {text.title}
         </Txt>
-        <Txt font="monoBold" size={14} tone="ink2">
-          {expanded ? '−' : '+'}
-        </Txt>
+        <Icon name={expanded ? 'chevronUp' : 'chevronDown'} size="sm" color={colors.ink2} />
       </Pressable>
       {expanded ? (
         <Txt font="body" size={14} lineHeight={22} style={styles.textBody}>

@@ -99,7 +99,6 @@ export function DeleteAccountDialog({ visible, onClose }: Props) {
               loading={loading}
               disabled={!armed}
               color={Accent.red}
-              textColor={colors.paper}
             />
 
             <Pressable onPress={close} style={styles.cancel} accessibilityRole="button" accessibilityLabel="Annuler">

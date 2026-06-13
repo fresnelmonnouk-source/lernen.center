@@ -87,10 +87,10 @@ export function TestRunner({ questions, submitting, onSubmit }: Props) {
 
       <View style={styles.nav}>
         <View style={styles.navBtn}>
-          <ButtonPrimary label="‹ Préc." onPress={() => setIndex((n) => n - 1)} disabled={index === 0} />
+          <ButtonPrimary label="Préc." icon="chevronLeft" iconPosition="left" onPress={() => setIndex((n) => n - 1)} disabled={index === 0} />
         </View>
         <View style={styles.navBtn}>
-          <ButtonPrimary label="Suiv. ›" onPress={() => setIndex((n) => n + 1)} disabled={isLast} />
+          <ButtonPrimary label="Suiv." icon="chevronRight" iconPosition="right" onPress={() => setIndex((n) => n + 1)} disabled={isLast} />
         </View>
       </View>
 

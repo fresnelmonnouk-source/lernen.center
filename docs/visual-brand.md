@@ -298,3 +298,28 @@ Principe directeur : **l'ombre dure est la dernière chose qu'on sacrifie au-des
 - [ ] Test 48px launcher (Kody, émulateur Pixel_Fold) : le mark est reconnaissable.
 - [ ] Validation finale Fresnel sur la variante couleur retenue.
 ```
+
+---
+
+## 9. Système d'icônes (DA Vincent — 2026-06-13)
+
+Remplace les glyphes Unicode (→ ✓ ✗ ⚠ ↺ ☀ ☾ • …) par un vrai pack vectoriel, cohérent brutalist.
+
+**Pack : `lucide-react-native`** (trait uniforme paramétrable, géométrie pure grille 24, sharp). Consomme `react-native-svg` déjà présent.
+
+**Wrapper obligatoire `Icon` (`components/ui/Icon.tsx`)** — on n'importe JAMAIS lucide directement dans un écran.
+- Props : `name` (registre), `size` (`sm`18 / `md`20 / `lg`24, défaut `md`, ou px), `color` (défaut `colors.ink`), `label` (a11y ; absent = décoratif, masqué du a11y tree).
+- `strokeWidth` auto selon taille : 18→2 · 20→2.25 · 24→2.5 (`lg` = `Border.base`). Le trait reste optiquement constant, jamais bouché en petit.
+- Couleur : `colors.ink` sur fond neutre ; sur fond accent → `accentForeground(bg)` (noir sur yellow, cream sinon, **indépendant du thème** — règle a11y figée, factorisée dans `tokens.ts`).
+
+**Map concept → icône** : `arrowRight` (liens/CTA/nav) · `arrowLeft` (retour) · `chevronLeft/Right` (pager) · `chevronUp/Down` (collapsible) · `arrowUpRight` (carte/coin) · `check` (correct/connu, vert) · `x` (faux, rouge) · `partial` (Minus, mi-correct, yellowDark) · `rotateCcw` (à revoir) · `swap` (DE↔FR) · `sun`/`moon` (thème, on affiche la CIBLE) · `warning` (TriangleAlert) · `lock` (V2) · `award` (note d'examen).
+
+**Puces** = composant `Bullet` (`<View>` carré plein 6px, zéro radius) — JAMAIS un rond.
+
+**Note d'examen** : l'emoji backend (🌟…) est **ignoré à l'affichage** (l'API le renvoie toujours) → icône `Award` + score chiffré en JetBrains Mono. La couleur encode déjà le résultat (carte verte/rouge).
+
+**Conservés (pas des icônes)** : `•••` placeholder mot de passe, « DE → FR » (direction sémantique), émojis du Vocabulaire (1377, données pédagogiques).
+
+**Pièges** : icône signifiante seule = `label` ; redondante = masquée a11y ; cible tactile 44pt via `IconButton`+hitSlop ; ne jamais hardcoder `#0A0A0A` sur fond cream/paper (invisible en dark) ; pas de cercle-contour décoratif (`CheckCircle`/`Dot` interdits).
+
+> ⚠️ Cohérence dark : tout texte/icône sur un fond ACCENT FIXE doit passer par `accentForeground(bg)`, jamais `colors.ink/cream/paper` (qui s'inversent → texte invisible en dark). Cf. fix audit 2026-06-13 (ActionCard / Chip / ButtonPrimary).

@@ -1,6 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 
+import { Bullet } from '@/components/ui/Bullet';
 import { HardShadowBox } from '@/components/ui/HardShadowBox';
+import { Icon } from '@/components/ui/Icon';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Txt } from '@/components/ui/Txt';
 import { useTheme } from '@/theme/theme-context';
@@ -66,9 +68,9 @@ export function CourseReader({ course }: { course: Course }) {
           ))}
           {s.common_mistakes.map((m, i) => (
             <View key={i} style={styles.mistake}>
-              <Txt font="monoBold" size={13} color={Accent.red}>
-                ⚠
-              </Txt>
+              <View style={styles.mistakeIcon}>
+                <Icon name="warning" size="sm" color={Accent.red} />
+              </View>
               <Txt font="body" size={13} lineHeight={19} style={styles.flex}>
                 {m}
               </Txt>
@@ -82,9 +84,14 @@ export function CourseReader({ course }: { course: Course }) {
           À retenir
         </Txt>
         {course.key_points.map((k, i) => (
-          <Txt key={i} font="medium" size={14} color="#0A0A0A" lineHeight={20}>
-            • {k}
-          </Txt>
+          <View key={i} style={styles.keyRow}>
+            <View style={styles.keyBullet}>
+              <Bullet color="#0A0A0A" />
+            </View>
+            <Txt font="medium" size={14} color="#0A0A0A" lineHeight={20} style={styles.flex}>
+              {k}
+            </Txt>
+          </View>
         ))}
       </HardShadowBox>
     </View>
@@ -99,6 +106,9 @@ const styles = StyleSheet.create({
   section: { gap: Spacing.two },
   ex: { padding: Spacing.three, gap: Spacing.one },
   mistake: { flexDirection: 'row', gap: Spacing.two, alignItems: 'flex-start' },
+  mistakeIcon: { marginTop: 1 },
   flex: { flex: 1 },
   keys: { padding: Spacing.three, gap: Spacing.two },
+  keyRow: { flexDirection: 'row', gap: Spacing.two, alignItems: 'flex-start' },
+  keyBullet: { marginTop: 7 },
 });
